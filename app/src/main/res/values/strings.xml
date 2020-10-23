@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Billboard</string>
+    <string name="movie">Movie</string>
+    <string name="tv_show">Tv Show</string>
+    <string name="image_view_for_poster">image view for poster</string>
+    <string name="rating_star">rating star</string>
+    <string name="error_icon">error icon</string>
+    <string name="error">Oops! something went wrong.</string>
+    <string name="try_again">Please try again later.</string>
+    <string name="app_logo">app logo</string>
+    <string name="seasons">Seasons</string>
+    <string name="episodes">Episodes</string>
+    <string name="minutes">%1$s minutes</string>
+</resources>
