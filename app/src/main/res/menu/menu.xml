@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_movie"
         android:icon="@drawable/ic_movie"
-        android:title="@string/movie" />
+        android:title="@string/movie"
+        app:cnb_iconColor="@color/colorPrimary" />
 
     <item
         android:id="@+id/menu_tvshow"
         android:icon="@drawable/ic_tvshow"
-        android:title="@string/tv_show" />
+        android:title="@string/tv_show"
+        app:cnb_iconColor="@color/colorPrimary" />
 
 </menu>

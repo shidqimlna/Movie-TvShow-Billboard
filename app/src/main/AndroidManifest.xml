@@ -10,15 +10,32 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.JetpackProSubmission">
+        android:theme="@style/AppTheme">
 
-        <activity android:name=".view.activity.SplashActivity" />
-        <activity android:name=".view.activity.MovieDetailActivity" />
-        <activity android:name=".view.activity.TvShowDetailActivity" />
-        <activity android:name=".view.activity.MainActivity">
+        <activity android:name="com.example.jetpackprosubmission.ui.view.activity.HomeActivity" />
+        <activity
+            android:name="com.example.jetpackprosubmission.ui.view.activity.MovieDetailActivity"
+            android:label="@string/title_activity_detail_movie"
+            android:parentActivityName="com.example.jetpackprosubmission.ui.view.activity.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jetpackprosubmission.ui.view.activity.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.example.jetpackprosubmission.ui.view.activity.TvShowDetailActivity"
+            android:label="@string/title_activity_detail_tvshow"
+            android:parentActivityName="com.example.jetpackprosubmission.ui.view.activity.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jetpackprosubmission.ui.view.activity.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.example.jetpackprosubmission.ui.view.activity.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

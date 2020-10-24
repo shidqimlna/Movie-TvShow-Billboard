@@ -31,7 +31,6 @@
                     android:id="@+id/item_movie_iv_poster"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/loading_decor"
                     android:contentDescription="@string/image_view_for_poster" />
 
             </androidx.cardview.widget.CardView>
@@ -49,7 +48,7 @@
             <TextView
                 android:id="@+id/item_movie_tv_title"
                 style="@style/CodeFontBold"
-                android:layout_margin="4dp"
+                android:layout_margin="8dp"
                 android:ellipsize="end"
                 android:maxLines="2" />
 
@@ -62,19 +61,21 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:padding="4dp">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:contentDescription="@string/rating_star"
-                        android:src="@drawable/ic_ratestar" />
+                        android:src="@drawable/ic_star" />
 
                     <TextView
                         android:id="@+id/item_movie_tv_rating"
                         style="@style/CodeFontItallic"
-                        android:layout_width="32dp"
-                        android:layout_gravity="center" />
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="4dp" />
 
                 </LinearLayout>
 

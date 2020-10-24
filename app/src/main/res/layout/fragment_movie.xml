@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorDarkerWhite"
-    tools:context=".view.fragment.MovieFragment">
+    android:background="@color/colorDarkestWhite"
+    tools:context=".ui.view.fragment.MovieFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_movie_recyclerView"
