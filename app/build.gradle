@@ -36,12 +36,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
 }
 
 dependencies {
@@ -63,7 +57,6 @@ dependencies {
 
     //testing
     testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.robolectric:robolectric:4.4'
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.0.0'
     testImplementation 'org.mockito:mockito-inline:3.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

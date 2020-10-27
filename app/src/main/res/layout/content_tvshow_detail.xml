@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/colorDarkWhite"
-    tools:context=".ui.view.activity.TvShowDetailActivity">
+    tools:context=".ui.tvshow.TvShowDetailActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -105,7 +105,7 @@
 
                 <TextView
                     android:id="@+id/activity_detail_tvshow_tv_firstairdate"
-                    style="@style/CodeFontLight"
+                    style="@style/CodeFontRegularGrey"
                     android:layout_margin="4dp" />
 
                 <TextView
@@ -115,7 +115,7 @@
 
                 <TextView
                     android:id="@+id/activity_detail_tvshow_tv_lastairdate"
-                    style="@style/CodeFontLight"
+                    style="@style/CodeFontRegularGrey"
                     android:layout_margin="4dp" />
 
             </LinearLayout>
@@ -124,7 +124,7 @@
 
         <TextView
             android:id="@+id/activity_detail_tvshow_tv_genre"
-            style="@style/CodeFontLight"
+            style="@style/CodeFontRegularGrey"
             android:layout_marginHorizontal="12dp"
             android:ellipsize="end"
             android:maxLines="2" />
