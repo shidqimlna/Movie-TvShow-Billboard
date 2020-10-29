@@ -1,26 +1,18 @@
 package com.example.jetpackprosubmission.ui.movie
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.jetpackprosubmission.data.MovieEntity
-import com.example.jetpackprosubmission.util.DataDummy
+import com.example.jetpackprosubmission.data.MainRepository
+import com.example.jetpackprosubmission.data.source.local.entity.MovieEntity
 
-class MovieViewModel : ViewModel() {
+class MovieViewModel(private val mainRepository: MainRepository) : ViewModel() {
     private var movieId: String? = null
 
-    fun setSelectedMovie(movieId: String?) {
+    fun setMovie(movieId: String?) {
         this.movieId = movieId
     }
 
-    fun getMovie(): MovieEntity {
-        lateinit var movie: MovieEntity
-        val moviesEntities = DataDummy.generateDummyMovies()
-        for (movieEntity in moviesEntities) {
-            if (movieEntity.id == movieId) {
-                movie = movieEntity
-            }
-        }
-        return movie
-    }
+    fun getMovieDetail(): LiveData<MovieEntity> = mainRepository.getMovieDetail(movieId)
 
-    fun getMovies(): List<MovieEntity> = DataDummy.generateDummyMovies()
+    fun getMovieList(): LiveData<List<MovieEntity>> = mainRepository.getMovieList()
 }

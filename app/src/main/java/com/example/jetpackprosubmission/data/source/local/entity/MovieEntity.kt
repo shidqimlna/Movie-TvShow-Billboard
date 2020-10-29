@@ -1,4 +1,4 @@
-package com.example.jetpackprosubmission.data
+package com.example.jetpackprosubmission.data.source.local.entity
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -12,5 +12,5 @@ data class MovieEntity(
     val runtime: String? = null,
     val release_date: String? = null,
     val vote_average: String? = null,
-    val genres: ArrayList<GenreItem>? = null
+    val genres: ArrayList<GenreEntity>? = null
 ) : Parcelable

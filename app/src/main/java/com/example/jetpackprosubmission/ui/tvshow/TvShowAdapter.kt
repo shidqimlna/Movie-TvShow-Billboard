@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jetpackprosubmission.R
-import com.example.jetpackprosubmission.data.TvShowEntity
+import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
 import com.example.jetpackprosubmission.util.ConstantValue.IMAGE_URL
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_tvshow.view.*

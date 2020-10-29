@@ -22,14 +22,14 @@ class HomeActivity : AppCompatActivity() {
             activity_main_bottomnavigationbar.setItemSelected(R.id.menu_movie, true)
             movieFragment?.let {
                 fragmentManager?.beginTransaction()?.replace(
-                        R.id.activity_main_fragmentcontainer,
-                        it
+                    R.id.activity_main_fragmentcontainer,
+                    it
                 )
-                        ?.commit()
+                    ?.commit()
             }
         }
         activity_main_bottomnavigationbar.setOnItemSelectedListener(object :
-                ChipNavigationBar.OnItemSelectedListener {
+            ChipNavigationBar.OnItemSelectedListener {
             override fun onItemSelected(id: Int) {
                 var fragment: Fragment? = null
                 when (id) {

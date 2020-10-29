@@ -1,18 +1,17 @@
 package com.example.jetpackprosubmission.ui.movie
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.jetpackprosubmission.R
-import com.example.jetpackprosubmission.data.MovieEntity
+import com.example.jetpackprosubmission.data.source.local.entity.MovieEntity
+import com.example.jetpackprosubmission.di.Injection
 import com.example.jetpackprosubmission.util.ConstantValue.IMAGE_URL
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail_movie.*
 import kotlinx.android.synthetic.main.content_movie_detail.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 class MovieDetailActivity : AppCompatActivity() {
@@ -29,16 +28,19 @@ class MovieDetailActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(
             this,
-            ViewModelProvider.NewInstanceFactory()
+            Injection.provideViewModelFactory()
         )[MovieViewModel::class.java]
+
+        activity_detail_movie_progressBar_layout.visibility = View.VISIBLE
 
         val extras = intent.extras
         if (extras != null) {
-            val movieId = extras.getString(EXTRA_MOVIE)
-            if (movieId != null) {
-                viewModel.setSelectedMovie(movieId)
-                loadData(viewModel.getMovie())
-            }
+            val movieId = extras.getString(EXTRA_MOVIE) ?: ""
+            viewModel.setMovie(movieId)
+            viewModel.getMovieDetail().observe(this, { movie ->
+                activity_detail_movie_progressBar_layout.visibility = View.GONE
+                loadData(movie)
+            })
         }
     }
 
@@ -51,16 +53,8 @@ class MovieDetailActivity : AppCompatActivity() {
             activity_detail_movie_tv_rating.text = it.vote_average
             activity_detail_movie_tv_runtime.text = getString(R.string.minutes, it.runtime)
             activity_detail_movie_tv_overview.text = it.overview
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                activity_detail_movie_tv_releasedate.text =
-                    LocalDateTime.parse(it.release_date).toLocalDate().format(
-                        DateTimeFormatter.ofLocalizedDate(
-                            FormatStyle.LONG
-                        ).withLocale(Locale.US)
-                    )
-            } else {
-                activity_detail_movie_tv_releasedate.text = it.release_date
-            }
+            activity_detail_movie_tv_releasedate.text = it.release_date
+
             val listGenres = ArrayList<String?>()
             it.genres?.forEach { genre ->
                 listGenres.add(genre.name)
@@ -76,7 +70,7 @@ class MovieDetailActivity : AppCompatActivity() {
             .from(this)
             .setType(mimeType)
             .setChooserTitle("Share")
-            .setText("I recommend you to watch ${movie?.title}")
+            .setText(getString(R.string.share_text, movie?.title))
             .startChooser()
 
     }

@@ -27,4 +27,8 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <include
+        android:id="@+id/activity_detail_tvshow_progressBar_layout"
+        layout="@layout/progressbar_layout" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,4 +1,4 @@
-package com.example.jetpackprosubmission.data
+package com.example.jetpackprosubmission.data.source.local.entity
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -14,5 +14,5 @@ data class TvShowEntity(
     val vote_average: String? = null,
     val number_of_episodes: String? = null,
     val number_of_seasons: String? = null,
-    val genres: ArrayList<GenreItem>? = null
+    val genres: ArrayList<GenreEntity>? = null
 ) : Parcelable

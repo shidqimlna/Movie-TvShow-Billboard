@@ -1,24 +1,13 @@
-package com.example.jetpackprosubmission.util
+package com.example.jetpackprosubmission.utils
 
-import com.example.jetpackprosubmission.data.MovieEntity
-import com.example.jetpackprosubmission.data.TvShowEntity
+import com.example.jetpackprosubmission.data.source.local.entity.MovieEntity
+import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
 import java.util.*
 
 object DataDummy {
     fun generateDummyMovies(): ArrayList<MovieEntity> {
         val movies = ArrayList<MovieEntity>()
 
-        movies.add(
-            MovieEntity(
-                "528085",
-                "2067",
-                "/7D430eqZj8y3oVkLFfsWXGRcpEG.jpg",
-                "A lowly utility worker is called to the future by a mysterious radio signal, he must leave his dying wife to embark on a journey that will force him to face his deepest fears in an attempt to change the fabric of reality and save humankind from its greatest environmental crisis yet.",
-                "105",
-                "2020-10-01",
-                "5.6"
-            )
-        )
         movies.add(
             MovieEntity(
                 "724989",
@@ -28,6 +17,17 @@ object DataDummy {
                 "113",
                 "2020-10-23",
                 "3.7"
+            )
+        )
+        movies.add(
+            MovieEntity(
+                "528085",
+                "2067",
+                "/7D430eqZj8y3oVkLFfsWXGRcpEG.jpg",
+                "A lowly utility worker is called to the future by a mysterious radio signal, he must leave his dying wife to embark on a journey that will force him to face his deepest fears in an attempt to change the fabric of reality and save humankind from its greatest environmental crisis yet.",
+                "105",
+                "2020-10-01",
+                "5.6"
             )
         )
         movies.add(

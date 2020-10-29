@@ -1,21 +1,21 @@
 package com.example.jetpackprosubmission.ui.tvshow
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.jetpackprosubmission.R
-import com.example.jetpackprosubmission.data.TvShowEntity
+import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
+import com.example.jetpackprosubmission.di.Injection
 import com.example.jetpackprosubmission.util.ConstantValue.IMAGE_URL
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail_tvshow.*
 import kotlinx.android.synthetic.main.content_tvshow_detail.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 class TvShowDetailActivity : AppCompatActivity() {
+
     companion object {
         const val EXTRA_TVSHOW = "extra_tvshow"
     }
@@ -28,16 +28,19 @@ class TvShowDetailActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(
             this,
-            ViewModelProvider.NewInstanceFactory()
+            Injection.provideViewModelFactory()
         )[TvShowViewModel::class.java]
+
+        activity_detail_tvshow_progressBar_layout.visibility = View.VISIBLE
 
         val extras = intent.extras
         if (extras != null) {
-            val movieId = extras.getString(EXTRA_TVSHOW)
-            if (movieId != null) {
-                viewModel.setSelectedTvShow(movieId)
-                loadData(viewModel.getTvShow())
-            }
+            val movieId = extras.getString(EXTRA_TVSHOW) ?: ""
+            viewModel.setTvShow(movieId)
+            viewModel.getTvShowDetail().observe(this, { tvShow ->
+                activity_detail_tvshow_progressBar_layout.visibility = View.GONE
+                loadData(tvShow)
+            })
         }
     }
 
@@ -51,23 +54,8 @@ class TvShowDetailActivity : AppCompatActivity() {
             activity_detail_tvshow_tv_seasons.text = it.number_of_seasons
             activity_detail_tvshow_tv_episodes.text = it.number_of_episodes
             activity_detail_tvshow_tv_overview.text = it.overview
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                activity_detail_tvshow_tv_firstairdate.text =
-                    LocalDateTime.parse(it.first_air_date).toLocalDate().format(
-                        DateTimeFormatter.ofLocalizedDate(
-                            FormatStyle.LONG
-                        ).withLocale(Locale.US)
-                    )
-                activity_detail_tvshow_tv_lastairdate.text =
-                    LocalDateTime.parse(it.last_air_date).toLocalDate().format(
-                        DateTimeFormatter.ofLocalizedDate(
-                            FormatStyle.LONG
-                        ).withLocale(Locale.US)
-                    )
-            } else {
-                activity_detail_tvshow_tv_firstairdate.text = it.first_air_date
-                activity_detail_tvshow_tv_lastairdate.text = it.last_air_date
-            }
+            activity_detail_tvshow_tv_firstairdate.text = it.first_air_date
+            activity_detail_tvshow_tv_lastairdate.text = it.last_air_date
             val listGenres = ArrayList<String?>()
             it.genres?.forEach { genre ->
                 listGenres.add(genre.name)
@@ -83,7 +71,7 @@ class TvShowDetailActivity : AppCompatActivity() {
             .from(this)
             .setType(mimeType)
             .setChooserTitle("Share")
-            .setText("I recommend you to watch ${tvShow?.name}")
+            .setText(getString(R.string.share_text, tvShow?.name))
             .startChooser()
 
     }
