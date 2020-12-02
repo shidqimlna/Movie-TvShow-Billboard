@@ -12,9 +12,9 @@ import com.example.jetpackprosubmission.viewmodel.ViewModelFactory
 
 object Injection {
     private fun provideMainRepository(context: Context): MainRepository {
-        val remoteDataSource = RemoteDataSource.getInstance(MainAPI().create())
+        val remoteDataSource = RemoteDataSource.getInstance(MainAPI())
         val localDataSource =
-            LocalDataSource.getInstance(MainDatabase.getInstance(context).favoriteDao())
+            LocalDataSource.getInstance(MainDatabase.getInstance(context).mainDao())
         val appExecutors = AppExecutors()
 
         return MainRepository.getInstance(remoteDataSource, localDataSource, appExecutors)

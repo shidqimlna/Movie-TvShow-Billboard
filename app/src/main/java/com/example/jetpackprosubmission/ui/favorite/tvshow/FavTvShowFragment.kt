@@ -26,7 +26,7 @@ class FavTvShowFragment : Fragment() {
         if (activity != null) {
 
             val viewModel = ViewModelProvider(
-                this,
+                requireActivity(),
                 Injection.provideViewModelFactory(requireContext())
             )[FavoriteViewModel::class.java]
 
@@ -40,9 +40,11 @@ class FavTvShowFragment : Fragment() {
                 tvShowAdapter.notifyDataSetChanged()
             })
 
-            fragment_fav_tvShow_recyclerView.setHasFixedSize(true)
-            fragment_fav_tvShow_recyclerView.layoutManager = LinearLayoutManager(context)
-            fragment_fav_tvShow_recyclerView.adapter = tvShowAdapter
+            with(fragment_fav_tvShow_recyclerView) {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(context)
+                adapter = tvShowAdapter
+            }
         }
     }
 }

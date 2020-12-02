@@ -1,6 +1,5 @@
 package com.example.jetpackprosubmission.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -32,10 +31,16 @@ class MainRepository constructor(
             remoteData: RemoteDataSource,
             localData: LocalDataSource,
             appExecutors: AppExecutors
-        ): MainRepository =
-            instance ?: synchronized(this) {
-                instance ?: MainRepository(remoteData, localData, appExecutors)
+        ): MainRepository {
+            if (instance == null) {
+                synchronized(this) {
+                    if (instance == null) {
+                        instance = MainRepository(remoteData, localData, appExecutors)
+                    }
+                }
             }
+            return instance as MainRepository
+        }
     }
 
     override fun getMovieList(): LiveData<Resource<PagedList<MovieEntity>>> {
@@ -59,7 +64,7 @@ class MainRepository constructor(
             public override fun saveCallResult(data: List<MovieApiItem>) {
                 val movieList = ArrayList<MovieEntity>()
                 for (response in data) {
-                    Log.i("REPOS", "REPOS RESPONSE SAVECALL:" + response.title)
+//                    Log.i("REPOS", "REPOS RESPONSE SAVECALL:" + response.title)
                     val movie = MovieEntity(
                         id = response.id,
                         title = response.title,
@@ -69,7 +74,7 @@ class MainRepository constructor(
                     )
                     movieList.add(movie)
                 }
-                Log.i("REPOS", "REPOS INSERT LOCAL:" + movieList.get(0).title)
+//                Log.i("REPOS", "REPOS INSERT LOCAL:" + movieList.get(0).title)
                 localDataSource.insertMovies(movieList)
             }
         }.asLiveData()
@@ -204,6 +209,10 @@ class MainRepository constructor(
             .setPageSize(4)
             .build()
         return LivePagedListBuilder(localDataSource.getFavoriteTvShow(), config).build()
+    }
+
+    override fun existFavoriteMovie(title: String?): Boolean {
+        return localDataSource.existFavoriteMovie(title)
     }
 
     override fun insertFavoriteMovie(favoriteMovieEntity: FavoriteMovieEntity) {

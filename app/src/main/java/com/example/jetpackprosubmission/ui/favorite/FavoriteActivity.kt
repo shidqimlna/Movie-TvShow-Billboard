@@ -12,8 +12,8 @@ import kotlinx.android.synthetic.main.activity_favorite.*
 
 
 class FavoriteActivity : AppCompatActivity() {
-    private val fragmentManager: FragmentManager? = supportFragmentManager
-    private val favMovieFragment: FavMovieFragment? = FavMovieFragment()
+    private val fragmentManager: FragmentManager = supportFragmentManager
+    private val favMovieFragment: FavMovieFragment = FavMovieFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,12 +21,12 @@ class FavoriteActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             activity_favorite_bottomnavigationbar.setItemSelected(R.id.menu_movie, true)
-            favMovieFragment?.let {
-                fragmentManager?.beginTransaction()?.replace(
+            favMovieFragment.let {
+                fragmentManager.beginTransaction().replace(
                     R.id.activity_favorite_fragmentcontainer,
                     it
                 )
-                    ?.commit()
+                    .commit()
             }
         }
         activity_favorite_bottomnavigationbar.setOnItemSelectedListener(object :
@@ -38,8 +38,8 @@ class FavoriteActivity : AppCompatActivity() {
                     R.id.menu_tvshow -> fragment = FavTvShowFragment()
                 }
                 if (fragment != null) {
-                    val fragmentTransaction = fragmentManager?.beginTransaction()
-                    fragmentTransaction?.let {
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.let {
                         it.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         it.replace(R.id.activity_favorite_fragmentcontainer, fragment)
                         it.commit()

@@ -1,6 +1,5 @@
 package com.example.jetpackprosubmission.ui.movie
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -30,39 +29,34 @@ class MovieViewModel(private val mainRepository: MainRepository) : ViewModel() {
 
     fun getMovieList(): LiveData<Resource<PagedList<MovieEntity>>> {
         if (movies == null) movies = mainRepository.getMovieList()
-        Log.i("VIEWMODEL", "VIEWMODEL :" + movies?.value?.data?.get(0)?.title)
+//        Log.i("VIEWMODEL", "VIEWMODEL :" + movies?.value?.data?.get(0)?.title)
         return movies as LiveData<Resource<PagedList<MovieEntity>>>
     }
 
-    fun insertFavoriteMovie() {
-        val favorite = getFavorite()
-        if (favorite != null)
-            mainRepository.insertFavoriteMovie(favorite)
+    fun existFavoriteMovie(title: String?): Boolean {
+        return mainRepository.existFavoriteMovie(title)
     }
 
-    fun deleteFavoriteMovie() {
-        val favorite = getFavorite()
-        if (favorite != null)
-            mainRepository.deleteFavoriteMovie(favorite)
+    fun insertFavoriteMovie(movieEntity: MovieEntity) {
+        val favorite = getFavorite(movieEntity)
+        mainRepository.insertFavoriteMovie(favorite)
     }
 
-    private fun getFavorite(): FavoriteMovieEntity? {
-        var favoriteEntity: FavoriteMovieEntity? = null
-        val movieResource = movie?.value
-        Log.d("ERROR 1", movieResource.toString())
-        if (movieResource != null) {
-            val movie = movieResource.data
-            Log.d("ERROR 2", movie.toString())
-            if (movie != null) {
-                favoriteEntity = FavoriteMovieEntity(
-                    id = movie.id,
-                    title = movie.title,
-                    releaseDate = movie.releaseDate,
-                    posterPath = movie.posterPath,
-                )
-                Log.d("ERROR 3", favoriteEntity.toString())
-            }
-        }
-        return favoriteEntity
+    fun deleteFavoriteMovie(movieEntity: MovieEntity) {
+        val favorite = getFavorite(movieEntity)
+        mainRepository.deleteFavoriteMovie(favorite)
+    }
+
+    private fun getFavorite(movie: MovieEntity): FavoriteMovieEntity {
+        return FavoriteMovieEntity(
+            id = movie.id,
+            title = movie.title,
+            releaseDate = movie.releaseDate,
+            overview = movie.overview,
+            posterPath = movie.posterPath,
+            runtime = movie.runtime,
+            voteAverage = movie.voteAverage,
+            genres = movie.genres
+        )
     }
 }

@@ -33,13 +33,11 @@ class TvShowAdapter : PagedListAdapter<TvShowEntity, TvShowAdapter.ListViewHolde
         }
     }
 
-    private val listTvShows = ArrayList<TvShowEntity>()
-
-    fun setData(entities: Collection<TvShowEntity>) {
-        listTvShows.clear()
-        listTvShows.addAll(entities)
-        notifyDataSetChanged()
-    }
+//    fun setData(entities: Collection<TvShowEntity>) {
+//        listTvShows.clear()
+//        listTvShows.addAll(entities)
+//        notifyDataSetChanged()
+//    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder =
         ListViewHolder(
@@ -47,10 +45,12 @@ class TvShowAdapter : PagedListAdapter<TvShowEntity, TvShowAdapter.ListViewHolde
         )
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        holder.bindView(listTvShows[position])
+        val tvShow = getItem(position)
+        if (tvShow != null)
+            holder.bindView(tvShow)
     }
 
-    override fun getItemCount(): Int = listTvShows.size
+//    override fun getItemCount(): Int = listTvShows.size
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindView(tvShow: TvShowEntity?) {

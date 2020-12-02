@@ -1,6 +1,5 @@
 package com.example.jetpackprosubmission.data.source.remote
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.jetpackprosubmission.data.source.remote.response.MovieApiItem
@@ -12,23 +11,25 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RemoteDataSource constructor(private val mainApiInterface: MainApiInterface) {
+class RemoteDataSource constructor(private val mainAPI: MainAPI) {
 
     companion object {
+        const val ERROR_RESPONSE = "Response Error"
+        const val ERROR_DATA = "Data Error"
 
         @Volatile
         private var instance: RemoteDataSource? = null
-        fun getInstance(mainApiInterface: MainApiInterface): RemoteDataSource =
+        fun getInstance(mainApi: MainAPI): RemoteDataSource =
             instance ?: synchronized(this) {
-                instance ?: RemoteDataSource(mainApiInterface)
+                instance ?: RemoteDataSource(mainApi)
             }
     }
 
     fun getMovieList(): LiveData<ApiResponse<List<MovieApiItem>>> {
         IdlingResource.increment()
         val result = MutableLiveData<ApiResponse<List<MovieApiItem>>>()
-        mainApiInterface.getMovieList()
-            .enqueue(object : Callback<MovieApiResponse> {
+        mainAPI.create()?.getMovieList()
+            ?.enqueue(object : Callback<MovieApiResponse> {
                 override fun onResponse(
                     call: Call<MovieApiResponse>,
                     response: Response<MovieApiResponse>
@@ -38,21 +39,23 @@ class RemoteDataSource constructor(private val mainApiInterface: MainApiInterfac
                         if (response.isSuccessful) {
                             val movieResponse: List<MovieApiItem> =
                                 response.body()?.results ?: emptyList()
-                            result.value = ApiResponse.success(movieResponse)
-                            Log.i(
-                                "REMOTEDATASOUCRE",
-                                "REMOTEDATASOUCRE :" + movieResponse.get(0).title
-                            )
-                        }
+                            if (movieResponse.isNullOrEmpty())
+                                result.value = ApiResponse.empty(ERROR_DATA)
+                            else
+                                result.value = ApiResponse.success(movieResponse)
+//                            Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE :" + movieResponse.get(0).title)
+                        } else result.value = ApiResponse.error(ERROR_RESPONSE)
                     } catch (e: Exception) {
-                        Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : EXCEPT")
+//                        Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : EXCEPT")
+                        result.value = e.message?.let { ApiResponse.error(it) }
                         throw Exception(e.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<MovieApiResponse>, t: Throwable) {
                     IdlingResource.decrement()
-                    Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : FAIL")
+//                    Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : FAIL")
+                    result.value = t.message?.let { ApiResponse.error(it) }
                     throw Exception(t.message.toString())
                 }
             })
@@ -62,7 +65,7 @@ class RemoteDataSource constructor(private val mainApiInterface: MainApiInterfac
     fun getMovieDetail(id: String?): LiveData<ApiResponse<MovieApiItem>> {
         IdlingResource.increment()
         val result = MutableLiveData<ApiResponse<MovieApiItem>>()
-        mainApiInterface.getMovieDetail(id).enqueue(object : Callback<MovieApiItem> {
+        mainAPI.create()?.getMovieDetail(id)?.enqueue(object : Callback<MovieApiItem> {
             override fun onResponse(
                 call: Call<MovieApiItem>,
                 response: Response<MovieApiItem>
@@ -72,14 +75,17 @@ class RemoteDataSource constructor(private val mainApiInterface: MainApiInterfac
                     if (response.isSuccessful) {
                         val movieResponse = response.body()
                         if (movieResponse != null) result.value = ApiResponse.success(movieResponse)
-                    }
+                        else result.value = ApiResponse.empty(ERROR_DATA)
+                    } else result.value = ApiResponse.error(ERROR_RESPONSE)
                 } catch (e: Exception) {
+                    result.value = e.message?.let { ApiResponse.error(it) }
                     throw Exception(e.message.toString())
                 }
             }
 
             override fun onFailure(call: Call<MovieApiItem>, t: Throwable) {
                 IdlingResource.decrement()
+                result.value = t.message?.let { ApiResponse.error(it) }
                 throw Exception(t.message.toString())
             }
         })
@@ -89,8 +95,8 @@ class RemoteDataSource constructor(private val mainApiInterface: MainApiInterfac
     fun getTvShowList(): LiveData<ApiResponse<List<TvShowApiItem>>> {
         IdlingResource.increment()
         val result = MutableLiveData<ApiResponse<List<TvShowApiItem>>>()
-        mainApiInterface.getTvShowList()
-            .enqueue(object : Callback<TvShowApiResponse> {
+        mainAPI.create()?.getTvShowList()
+            ?.enqueue(object : Callback<TvShowApiResponse> {
                 override fun onResponse(
                     call: Call<TvShowApiResponse>,
                     response: Response<TvShowApiResponse>
@@ -100,15 +106,20 @@ class RemoteDataSource constructor(private val mainApiInterface: MainApiInterfac
                         if (response.isSuccessful) {
                             val tvShowResponse: List<TvShowApiItem> =
                                 response.body()?.results ?: emptyList()
-                            result.value = ApiResponse.success(tvShowResponse)
-                        }
+                            if (tvShowResponse.isNullOrEmpty())
+                                result.value = ApiResponse.empty(ERROR_DATA)
+                            else
+                                result.value = ApiResponse.success(tvShowResponse)
+                        } else result.value = ApiResponse.error(ERROR_RESPONSE)
                     } catch (e: Exception) {
+                        result.value = e.message?.let { ApiResponse.error(it) }
                         throw Exception(e.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<TvShowApiResponse>, t: Throwable) {
                     IdlingResource.decrement()
+                    result.value = t.message?.let { ApiResponse.error(it) }
                     throw Exception(t.message.toString())
                 }
             })
@@ -118,7 +129,7 @@ class RemoteDataSource constructor(private val mainApiInterface: MainApiInterfac
     fun getTvShowDetail(id: String?): LiveData<ApiResponse<TvShowApiItem>> {
         IdlingResource.increment()
         val result = MutableLiveData<ApiResponse<TvShowApiItem>>()
-        mainApiInterface.getTvShowDetail(id).enqueue(object : Callback<TvShowApiItem> {
+        mainAPI.create()?.getTvShowDetail(id)?.enqueue(object : Callback<TvShowApiItem> {
             override fun onResponse(
                 call: Call<TvShowApiItem>,
                 response: Response<TvShowApiItem>
@@ -129,14 +140,17 @@ class RemoteDataSource constructor(private val mainApiInterface: MainApiInterfac
                         val tvShowResponse = response.body()
                         if (tvShowResponse != null) result.value =
                             ApiResponse.success(tvShowResponse)
-                    }
+                        else result.value = ApiResponse.empty(ERROR_DATA)
+                    } else result.value = ApiResponse.error(ERROR_RESPONSE)
                 } catch (e: Exception) {
+                    result.value = e.message?.let { ApiResponse.error(it) }
                     throw Exception(e.message.toString())
                 }
             }
 
             override fun onFailure(call: Call<TvShowApiItem>, t: Throwable) {
                 IdlingResource.decrement()
+                result.value = t.message?.let { ApiResponse.error(it) }
                 throw Exception(t.message.toString())
             }
         })

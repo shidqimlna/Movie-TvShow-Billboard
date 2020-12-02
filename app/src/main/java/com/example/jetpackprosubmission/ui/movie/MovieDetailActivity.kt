@@ -2,14 +2,17 @@ package com.example.jetpackprosubmission.ui.movie
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.jetpackprosubmission.R
+import com.example.jetpackprosubmission.data.source.local.entity.FavoriteMovieEntity
 import com.example.jetpackprosubmission.data.source.local.entity.MovieEntity
 import com.example.jetpackprosubmission.di.Injection
 import com.example.jetpackprosubmission.util.ConstantValue.IMAGE_URL
 import com.example.jetpackprosubmission.util.Helper.runtimeFormatting
+import com.example.jetpackprosubmission.vo.Status
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail_movie.*
 import kotlinx.android.synthetic.main.content_movie_detail.*
@@ -17,6 +20,7 @@ import kotlinx.android.synthetic.main.content_movie_detail.*
 class MovieDetailActivity : AppCompatActivity() {
 
     companion object {
+        const val EXTRA_MOVIE_FAVORITE = "extra_movie_favorite"
         const val EXTRA_MOVIE = "extra_movie"
         const val FAVORITED = "isFavorited"
     }
@@ -38,26 +42,109 @@ class MovieDetailActivity : AppCompatActivity() {
         if (extras != null) {
             val isFavorite = extras.getBoolean(FAVORITED, false)
             val extraMovie = extras.getParcelable<MovieEntity>(EXTRA_MOVIE)
+            val extraMovieFavorite = convertFavorite(extras.getParcelable(EXTRA_MOVIE_FAVORITE))
+
             when (isFavorite) {
                 true -> {
-                    activity_detail_movie_progressBar_layout.visibility = View.GONE
-                    loadData(extraMovie, viewModel, isFavorite)
+                    setData(extraMovieFavorite, viewModel)
                 }
                 false -> {
-                    viewModel.setMovie(extraMovie?.id)
-                    viewModel.getMovieDetail().observe(this, { movie ->
-                        activity_detail_movie_progressBar_layout.visibility = View.GONE
-                        loadData(movie.data, viewModel, isFavorite)
-                    })
+                    if (extraMovie != null) setData(extraMovie, viewModel)
                 }
             }
+
+
+//            when (isFavorite) {
+//                true -> {
+//                    activity_detail_movie_progressBar_layout.visibility = View.GONE
+//                    loadData(extraMovieFavorite)
+//                }
+//                false -> {
+//                    viewModel.setMovie(extraMovie?.id)
+//                    viewModel.getMovieDetail().observe(this, { movie ->
+//                        if (movie != null) {
+//                            when (movie.status) {
+//                                Status.LOADING -> {
+//                                    activity_detail_movie_progressBar_layout.visibility = View.VISIBLE
+////                                    isLoading = true
+//                                }
+//                                Status.SUCCESS -> {
+//                                    activity_detail_movie_progressBar_layout.visibility = View.GONE
+////                                    isLoading = false
+//                                    if (movie.data != null)
+//                                        loadData(movie.data)
+////                                        showFragment(DetailMovieFragment.getInstance(movie.data))
+//                                }
+//                                Status.ERROR -> {
+//                                    activity_detail_movie_progressBar_layout.visibility = View.GONE
+////                                    isLoading = false
+//                                    Toast.makeText(
+//                                        this,
+//                                        resources.getString(R.string.error_message),
+//                                        Toast.LENGTH_LONG
+//                                    ).show()
+//                                }
+//                            }
+//                        }
+////                        activity_detail_movie_progressBar_layout.visibility = View.GONE
+////                        loadData(movie.data, viewModel, isFavorite)
+//                    })
+//                }
+//            }
+        }
+    }
+
+    private fun setData(movieEntity: MovieEntity, viewModel: MovieViewModel) {
+        if (viewModel.existFavoriteMovie(movieEntity.title)) {
+            activity_detail_movie_progressBar_layout.visibility = View.GONE
+            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_fill)
+            loadData(movieEntity)
+            activity_detail_movie_fab_favorite.setOnClickListener {
+                viewModel.deleteFavoriteMovie(movieEntity)
+                setData(movieEntity, viewModel)
+            }
+        } else {
+            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_empty)
+            viewModel.setMovie(movieEntity.id)
+            viewModel.getMovieDetail().observe(this, { movie ->
+                if (movie != null) {
+                    when (movie.status) {
+                        Status.LOADING -> {
+                            activity_detail_movie_progressBar_layout.visibility = View.VISIBLE
+//                                    isLoading = true
+                        }
+                        Status.SUCCESS -> {
+                            activity_detail_movie_fab_favorite.setOnClickListener {
+                                viewModel.insertFavoriteMovie(movieEntity)
+                                if (movie.data != null) setData(movie.data, viewModel)
+                            }
+                            activity_detail_movie_progressBar_layout.visibility = View.GONE
+//                                    isLoading = false
+                            if (movie.data != null)
+                                loadData(movie.data)
+//                                        showFragment(DetailMovieFragment.getInstance(movie.data))
+                        }
+                        Status.ERROR -> {
+                            activity_detail_movie_progressBar_layout.visibility = View.GONE
+//                                    isLoading = false
+                            Toast.makeText(
+                                this,
+                                resources.getString(R.string.error_message),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+//                        activity_detail_movie_progressBar_layout.visibility = View.GONE
+//                        loadData(movie.data, viewModel, isFavorite)
+            })
         }
     }
 
     private fun loadData(
         movieEntity: MovieEntity?,
-        viewModel: MovieViewModel,
-        isFavorite: Boolean
+//        viewModel: MovieViewModel,
+//        isFavorite: Boolean
     ) {
         movieEntity?.let {
             Picasso.get().load(IMAGE_URL + it.posterPath).fit()
@@ -71,24 +158,28 @@ class MovieDetailActivity : AppCompatActivity() {
             activity_detail_movie_tv_genre.text = it.genres
             activity_detail_movie_ib_share.setOnClickListener { onShareClick(movieEntity) }
 
-            activity_detail_movie_fab_favorite.apply {
-                when (isFavorite) {
-                    true -> {
-                        setOnClickListener {
-                            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_fill)
-                            viewModel.deleteFavoriteMovie()
+//            activity_detail_movie_fab_favorite.apply {
+//                when (isFavorite) {
+//                    true -> {
+//                        activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_fill)
+//                        Log.e("Detail Movie", "TRUE FAV :" + movieEntity.title)
+//                        setOnClickListener {
+//                            Log.e("Detail Movie", "FALSE FAV CLICK :" + movieEntity.title)
+////                            viewModel.deleteFavoriteMovie()
 //                            viewModel.deleteFavoriteMovie(movieEntity)
-                        }
-                    }
-                    false -> {
-                        setOnClickListener {
-                            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_empty)
-                            viewModel.insertFavoriteMovie()
+//                        }
+//                    }
+//                    false -> {
+//                        activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_empty)
+//                        Log.e("Detail Movie", "FALSE FAV :" + movieEntity.title)
+//                        setOnClickListener {
+//                            Log.e("Detail Movie", "TRUE FAV CLICK :" + movieEntity.title)
+////                            viewModel.insertFavoriteMovie()
 //                            viewModel.insertFavoriteMovie(movieEntity)
-                        }
-                    }
-                }
-            }
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -101,6 +192,18 @@ class MovieDetailActivity : AppCompatActivity() {
             .setText(getString(R.string.share_text, movie?.title))
             .startChooser()
 
+    }
+
+    private fun convertFavorite(favoriteMovieEntity: FavoriteMovieEntity?): MovieEntity {
+        return MovieEntity(
+            title = favoriteMovieEntity?.title,
+            releaseDate = favoriteMovieEntity?.releaseDate,
+            overview = favoriteMovieEntity?.overview,
+            posterPath = favoriteMovieEntity?.posterPath,
+            runtime = favoriteMovieEntity?.runtime,
+            voteAverage = favoriteMovieEntity?.voteAverage,
+            genres = favoriteMovieEntity?.genres
+        )
     }
 
 }

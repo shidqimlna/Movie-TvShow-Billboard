@@ -35,8 +35,6 @@ class FavMovieAdapter :
         }
     }
 
-    private val listMovies = ArrayList<FavoriteMovieEntity>()
-
 //    fun setData(entities: Collection<FavoriteMovieEntity>) {
 //        listMovies.clear()
 //        listMovies.addAll(entities)
@@ -49,10 +47,10 @@ class FavMovieAdapter :
         )
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        holder.bindView(listMovies[position])
+        val movies = getItem(position)
+        if (movies != null)
+            holder.bindView(movies)
     }
-
-    override fun getItemCount(): Int = listMovies.size
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindView(movie: FavoriteMovieEntity?) {
@@ -66,7 +64,7 @@ class FavMovieAdapter :
                     item_movie_tv_overview.text = it.overview
                     item_movie_cardView.setOnClickListener {
                         val intent = Intent(context, MovieDetailActivity::class.java)
-                        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie)
+                        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_FAVORITE, movie)
                         intent.putExtra(MovieDetailActivity.FAVORITED, true)
                         context.startActivity(intent)
                     }

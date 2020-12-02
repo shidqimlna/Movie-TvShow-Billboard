@@ -47,6 +47,9 @@ interface MainDao {
     @Query("SELECT * FROM favoriteTvShowEntity")
     fun getFavoriteTvShows(): DataSource.Factory<Int, FavoriteTvShowEntity>
 
+    @Query("SELECT EXISTS (SELECT 1 FROM favoriteMovieEntity WHERE title = :title)")
+    fun existFavoriteMovie(title: String?): Boolean
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFavoriteMovie(favoriteEntity: FavoriteMovieEntity)
 

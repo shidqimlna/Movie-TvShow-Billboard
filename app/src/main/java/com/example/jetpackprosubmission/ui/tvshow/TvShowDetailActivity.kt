@@ -2,13 +2,16 @@ package com.example.jetpackprosubmission.ui.tvshow
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.jetpackprosubmission.R
+import com.example.jetpackprosubmission.data.source.local.entity.FavoriteTvShowEntity
 import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
 import com.example.jetpackprosubmission.di.Injection
 import com.example.jetpackprosubmission.util.ConstantValue.IMAGE_URL
+import com.example.jetpackprosubmission.vo.Status
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail_tvshow.*
 import kotlinx.android.synthetic.main.content_tvshow_detail.*
@@ -16,6 +19,7 @@ import kotlinx.android.synthetic.main.content_tvshow_detail.*
 class TvShowDetailActivity : AppCompatActivity() {
 
     companion object {
+        const val EXTRA_TVSHOW_FAVORITE = "extra_tvshow_favorite"
         const val EXTRA_TVSHOW = "extra_tvshow"
         const val FAVORITED = "isFavorited"
     }
@@ -37,16 +41,41 @@ class TvShowDetailActivity : AppCompatActivity() {
         if (extras != null) {
             val isFavorite = extras.getBoolean(FAVORITED, false)
             val extraTvShow = extras.getParcelable<TvShowEntity>(EXTRA_TVSHOW)
+            val extraTvShowFavorite = convertFavorite(extras.getParcelable(EXTRA_TVSHOW_FAVORITE))
+
             when (isFavorite) {
                 true -> {
                     activity_detail_tvshow_progressBar_layout.visibility = View.GONE
-                    loadData(extraTvShow, viewModel, isFavorite)
+                    loadData(extraTvShowFavorite, viewModel, isFavorite)
                 }
                 false -> {
                     viewModel.setTvShow(extraTvShow?.id)
                     viewModel.getTvShowDetail().observe(this, { tvShow ->
-                        activity_detail_tvshow_progressBar_layout.visibility = View.GONE
-                        loadData(tvShow.data, viewModel, isFavorite)
+                        if (tvShow != null) {
+                            when (tvShow.status) {
+                                Status.LOADING -> {
+                                    activity_detail_tvshow_progressBar_layout.visibility =
+                                        View.VISIBLE
+//                                    isLoading = true
+                                }
+                                Status.SUCCESS -> {
+                                    activity_detail_tvshow_progressBar_layout.visibility = View.GONE
+//                                    isLoading = false
+                                    if (tvShow.data != null)
+                                        loadData(tvShow.data, viewModel, isFavorite)
+//                                        showFragment(DetailTvShowFragment.getInstance(tvShow.data))
+                                }
+                                Status.ERROR -> {
+                                    activity_detail_tvshow_progressBar_layout.visibility = View.GONE
+//                                    isLoading = false
+                                    Toast.makeText(
+                                        this,
+                                        resources.getString(R.string.error_message),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        }
                     })
                 }
             }
@@ -71,15 +100,15 @@ class TvShowDetailActivity : AppCompatActivity() {
             activity_detail_tvshow_fab_favorite.apply {
                 when (isFavorite) {
                     true -> {
+                        activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favourite_fill)
                         setOnClickListener {
-                            activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favourite_fill)
-//                            viewModel.deleteFavoriteTvShow(tvShow)
+                            viewModel.deleteFavoriteTvShow(tvShow)
                         }
                     }
                     false -> {
+                        activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favourite_empty)
                         setOnClickListener {
-                            activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favourite_empty)
-//                            viewModel.insertFavoriteTvShow(tvShow)
+                            viewModel.insertFavoriteTvShow(tvShow)
                         }
                     }
                 }
@@ -98,4 +127,18 @@ class TvShowDetailActivity : AppCompatActivity() {
 
     }
 
+    private fun convertFavorite(favoriteTvShowEntity: FavoriteTvShowEntity?): TvShowEntity {
+        return TvShowEntity(
+//            id = favoriteTvShowEntity?.id,
+            name = favoriteTvShowEntity?.name,
+            posterPath = favoriteTvShowEntity?.posterPath,
+            overview = favoriteTvShowEntity?.overview,
+            firstAirDate = favoriteTvShowEntity?.firstAirDate,
+            lastAirDate = favoriteTvShowEntity?.lastAirDate,
+            voteAverage = favoriteTvShowEntity?.voteAverage,
+            numberOfEpisodes = favoriteTvShowEntity?.numberOfEpisodes,
+            numberOfSeasons = favoriteTvShowEntity?.numberOfSeasons,
+            genres = favoriteTvShowEntity?.genres
+        )
+    }
 }

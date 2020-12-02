@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jetpackprosubmission.R
 import com.example.jetpackprosubmission.data.source.local.entity.FavoriteTvShowEntity
-import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
 import com.example.jetpackprosubmission.ui.tvshow.TvShowDetailActivity
 import com.example.jetpackprosubmission.util.ConstantValue.IMAGE_URL
 import com.squareup.picasso.Picasso
@@ -36,27 +35,19 @@ class FavTvShowAdapter :
         }
     }
 
-    private val listTvShows = ArrayList<TvShowEntity>()
-
-    fun setData(entities: Collection<TvShowEntity>) {
-        listTvShows.clear()
-        listTvShows.addAll(entities)
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder =
         ListViewHolder(
             LayoutInflater.from(viewGroup.context).inflate(R.layout.item_tvshow, viewGroup, false)
         )
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        holder.bindView(listTvShows[position])
+        val tvShow = getItem(position)
+        if (tvShow != null)
+            holder.bindView(tvShow)
     }
 
-    override fun getItemCount(): Int = listTvShows.size
-
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindView(tvShow: TvShowEntity?) {
+        fun bindView(tvShow: FavoriteTvShowEntity?) {
             tvShow?.let {
                 with(itemView) {
                     Picasso.get().load(IMAGE_URL + it.posterPath).fit()
@@ -67,7 +58,7 @@ class FavTvShowAdapter :
                     item_tvshow_tv_overview.text = it.overview
                     item_tvshow_cardView.setOnClickListener {
                         val intent = Intent(context, TvShowDetailActivity::class.java)
-                        intent.putExtra(TvShowDetailActivity.EXTRA_TVSHOW, tvShow)
+                        intent.putExtra(TvShowDetailActivity.EXTRA_TVSHOW_FAVORITE, tvShow)
                         intent.putExtra(TvShowDetailActivity.FAVORITED, true)
                         context.startActivity(intent)
                     }

@@ -26,7 +26,7 @@ class FavMovieFragment : Fragment() {
         if (activity != null) {
 
             val viewModel = ViewModelProvider(
-                this,
+                requireActivity(),
                 Injection.provideViewModelFactory(requireContext())
             )[FavoriteViewModel::class.java]
 
@@ -40,9 +40,11 @@ class FavMovieFragment : Fragment() {
                 movieAdapter.notifyDataSetChanged()
             })
 
-            fragment_fav_movie_recyclerView.setHasFixedSize(true)
-            fragment_fav_movie_recyclerView.layoutManager = LinearLayoutManager(context)
-            fragment_fav_movie_recyclerView.adapter = movieAdapter
+            with(fragment_fav_movie_recyclerView) {
+                setHasFixedSize(true)
+                layoutManager = LinearLayoutManager(context)
+                adapter = movieAdapter
+            }
         }
     }
 }

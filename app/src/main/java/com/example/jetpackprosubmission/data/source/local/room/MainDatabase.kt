@@ -16,7 +16,7 @@ import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
     exportSchema = false
 )
 abstract class MainDatabase : RoomDatabase() {
-    abstract fun favoriteDao(): MainDao
+    abstract fun mainDao(): MainDao
 
     companion object {
 
@@ -25,11 +25,11 @@ abstract class MainDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): MainDatabase {
             if (INSTANCE == null) {
-                synchronized(MainDatabase::class.java) {
+                synchronized(this) {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            MainDatabase::class.java, "mainDatabase"
+                            MainDatabase::class.java, "BillboardDatabase"
                         )
                             .build()
                     }

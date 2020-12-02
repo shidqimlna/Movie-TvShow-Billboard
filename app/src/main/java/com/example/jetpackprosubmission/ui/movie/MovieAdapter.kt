@@ -1,7 +1,6 @@
 package com.example.jetpackprosubmission.ui.movie
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,8 +33,6 @@ class MovieAdapter : PagedListAdapter<MovieEntity, MovieAdapter.ListViewHolder>(
         }
     }
 
-    private val listMovies = ArrayList<MovieEntity>()
-
 //    fun setData(entities: Collection<MovieEntity>) {
 //        listMovies.clear()
 //        listMovies.addAll(entities)
@@ -48,16 +45,18 @@ class MovieAdapter : PagedListAdapter<MovieEntity, MovieAdapter.ListViewHolder>(
         )
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        holder.bindView(listMovies[position])
+        val movies = getItem(position)
+        if (movies != null)
+            holder.bindView(movies)
     }
 
-    override fun getItemCount(): Int = listMovies.size
+//    override fun getItemCount(): Int = listMovies.size
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindView(movie: MovieEntity?) {
             movie?.let {
                 with(itemView) {
-                    Log.i("ADAPTER", "ADAPTER :" + movie.title)
+//                    Log.i("ADAPTER", "ADAPTER :" + movie.title)
                     Picasso.get().load(IMAGE_URL + it.posterPath).fit()
                         .placeholder(R.drawable.loading_decor).error(R.drawable.ic_imageerror)
                         .into(item_movie_iv_poster)

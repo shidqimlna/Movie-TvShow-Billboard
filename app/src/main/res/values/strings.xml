@@ -17,6 +17,7 @@
     <string name="first_air_date">First air date</string>
     <string name="last_air_date">Last air date</string>
     <string name="share_text">I recommend you to watch %1$s</string>
+    <string name="error_message">Oops, something went wrong!</string>
     <string name="button_for_accessing_favorite">button for accessing favorite</string>
     <string name="favorite">Favorite</string>
     <string name="favorite_button">Favorite button</string>

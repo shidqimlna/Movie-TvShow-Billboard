@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.activity_home.*
 
 
 class HomeActivity : AppCompatActivity() {
-    private val fragmentManager: FragmentManager? = supportFragmentManager
-    private val movieFragment: MovieFragment? = MovieFragment()
+    private val fragmentManager: FragmentManager = supportFragmentManager
+    private val movieFragment: MovieFragment = MovieFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,12 +23,12 @@ class HomeActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             activity_main_bottomnavigationbar.setItemSelected(R.id.menu_movie, true)
-            movieFragment?.let {
-                fragmentManager?.beginTransaction()?.replace(
+            movieFragment.let {
+                fragmentManager.beginTransaction().replace(
                     R.id.activity_main_fragmentcontainer,
                     it
                 )
-                    ?.commit()
+                    .commit()
             }
         }
         activity_main_bottomnavigationbar.setOnItemSelectedListener(object :
@@ -40,8 +40,8 @@ class HomeActivity : AppCompatActivity() {
                     R.id.menu_tvshow -> fragment = TvShowFragment()
                 }
                 if (fragment != null) {
-                    val fragmentTransaction = fragmentManager?.beginTransaction()
-                    fragmentTransaction?.let {
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.let {
                         it.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         it.replace(R.id.activity_main_fragmentcontainer, fragment)
                         it.commit()
