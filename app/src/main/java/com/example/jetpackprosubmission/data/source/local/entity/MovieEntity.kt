@@ -1,16 +1,21 @@
 package com.example.jetpackprosubmission.data.source.local.entity
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@Entity(tableName = "movieEntity")
 data class MovieEntity(
-    val id: String? = null,
-    val title: String? = null,
-    val poster_path: String? = null,
-    val overview: String? = null,
-    val runtime: String? = null,
-    val release_date: String? = null,
-    val vote_average: String? = null,
-    val genres: ArrayList<GenreEntity>? = null
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "id") val id: String = "",
+    @ColumnInfo(name = "title") val title: String? = null,
+    @ColumnInfo(name = "posterPath") val posterPath: String? = null,
+    @ColumnInfo(name = "overview") val overview: String? = null,
+    @ColumnInfo(name = "runtime") val runtime: Int? = null,
+    @ColumnInfo(name = "releaseDate") val releaseDate: String? = null,
+    @ColumnInfo(name = "voteAverage") val voteAverage: String? = null,
+    @ColumnInfo(name = "genres") val genres: String? = null
 ) : Parcelable

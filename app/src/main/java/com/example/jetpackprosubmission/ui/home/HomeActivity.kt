@@ -1,14 +1,17 @@
 package com.example.jetpackprosubmission.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.jetpackprosubmission.R
+import com.example.jetpackprosubmission.ui.favorite.FavoriteActivity
 import com.example.jetpackprosubmission.ui.movie.MovieFragment
 import com.example.jetpackprosubmission.ui.tvshow.TvShowFragment
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import kotlinx.android.synthetic.main.activity_home.*
+
 
 class HomeActivity : AppCompatActivity() {
     private val fragmentManager: FragmentManager? = supportFragmentManager
@@ -46,5 +49,9 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         })
+        activity_main_fab_favorite.setOnClickListener {
+            val intent = Intent(this, FavoriteActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

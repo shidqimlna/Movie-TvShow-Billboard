@@ -26,7 +26,7 @@ class TvShowFragment : Fragment() {
 
             val viewModel = ViewModelProvider(
                 this,
-                Injection.provideViewModelFactory()
+                Injection.provideViewModelFactory(requireContext())
             )[TvShowViewModel::class.java]
 
             val tvShowAdapter = TvShowAdapter()
@@ -35,7 +35,7 @@ class TvShowFragment : Fragment() {
 
             viewModel.getTvShowList().observe(this, { tvShow ->
                 fragment_tvShow_progress_bar.visibility = View.GONE
-                tvShowAdapter.setData(tvShow)
+                tvShowAdapter.submitList(tvShow.data)
                 tvShowAdapter.notifyDataSetChanged()
             })
 

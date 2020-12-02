@@ -1,6 +1,7 @@
 package com.example.jetpackprosubmission.ui.movie
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,7 @@ class MovieFragment : Fragment() {
 
             val viewModel = ViewModelProvider(
                 this,
-                Injection.provideViewModelFactory()
+                Injection.provideViewModelFactory(requireContext())
             )[MovieViewModel::class.java]
 
             val movieAdapter = MovieAdapter()
@@ -35,7 +36,8 @@ class MovieFragment : Fragment() {
 
             viewModel.getMovieList().observe(this, { movies ->
                 fragment_movie_progress_bar.visibility = View.GONE
-                movieAdapter.setData(movies)
+                movieAdapter.submitList(movies.data)
+                Log.i("FRAGMENT", "FRAGMENT 12 :" + movies.data?.get(0)?.title)
                 movieAdapter.notifyDataSetChanged()
             })
 

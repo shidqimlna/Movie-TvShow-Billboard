@@ -5,7 +5,7 @@ import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
 import java.util.*
 
 object DataDummy {
-    fun generateDummyMovies(): ArrayList<MovieEntity> {
+    fun generateDummyMovies(): List<MovieEntity> {
         val movies = ArrayList<MovieEntity>()
 
         movies.add(
@@ -14,7 +14,7 @@ object DataDummy {
                 "Hard Kill",
                 "/ugZW8ocsrfgI95pnQ7wrmKDxIe.jpg",
                 "The work of billionaire tech CEO Donovan Chalmers is so valuable that he hires mercenaries to protect it, and a terrorist group kidnaps his daughter just to get it.",
-                "113",
+                113,
                 "2020-10-23",
                 "3.7"
             )
@@ -25,7 +25,7 @@ object DataDummy {
                 "2067",
                 "/7D430eqZj8y3oVkLFfsWXGRcpEG.jpg",
                 "A lowly utility worker is called to the future by a mysterious radio signal, he must leave his dying wife to embark on a journey that will force him to face his deepest fears in an attempt to change the fabric of reality and save humankind from its greatest environmental crisis yet.",
-                "105",
+                105,
                 "2020-10-01",
                 "5.6"
             )
@@ -36,7 +36,7 @@ object DataDummy {
                 "Demon Slayer: Kimetsu no Yaiba - The Movie: Mugen Train",
                 "/h8Rb9gBr48ODIwYUttZNYeMWeUU.jpg",
                 "Tanjirō Kamado, joined with Inosuke Hashibira, a boy raised by boars who wears a boar's head, and Zenitsu Agatsuma, a scared boy who reveals his true power when he sleeps, boards the Infinity Train on a new mission with the Fire Hashira, Kyōjurō Rengoku, to defeat a demon who has been tormenting the people and killing the demon slayers who oppose it!",
-                "127",
+                127,
                 "2020-10-16",
                 "7.5"
             )
@@ -47,7 +47,7 @@ object DataDummy {
                 "Welcome to Sudden Death",
                 "/elZ6JCzSEvFOq4gNjNeZsnRFsvj.jpg",
                 "Jesse Freeman is a former special forces officer and explosives expert now working a regular job as a security guard in a state-of-the-art basketball arena. Trouble erupts when a tech-savvy cadre of terrorists kidnap the team's owner and Jesse's daughter during opening night. Facing a ticking clock and impossible odds, it's up to Jesse to not only save them but also a full house of fans in this highly charged action thriller.",
-                "114",
+                114,
                 "2020-09-29",
                 "6.4"
             )
@@ -58,7 +58,7 @@ object DataDummy {
                 "Enola Holmes",
                 "/riYInlsq2kf1AWoGm80JQW5dLKp.jpg",
                 "While searching for her missing mother, intrepid teen Enola Holmes uses her sleuthing skills to outsmart big brother Sherlock and help a runaway lord.",
-                "93",
+                93,
                 "2020-09-23",
                 "7.6"
             )
@@ -69,7 +69,7 @@ object DataDummy {
                 "Love and Monsters",
                 "/r4Lm1XKP0VsTgHX4LG4syAwYA2I.jpg",
                 "Seven years after the Monsterpocalypse, Joel Dawson, along with the rest of humanity, has been living underground ever since giant creatures took control of the land. After reconnecting over radio with his high school girlfriend Aimee, who is now 80 miles away at a coastal colony, Joel begins to fall for her again. As Joel realizes that there’s nothing left for him underground, he decides against all logic to venture out to Aimee, despite all the dangerous monsters that stand in his way.",
-                "123",
+                123,
                 "2020-10-16",
                 "7.7"
             )
@@ -80,7 +80,7 @@ object DataDummy {
                 "A Quiet Place Part II",
                 "/4q2hz2m8hubgvijz8Ez0T2Os2Yv.jpg",
                 "ollowing the events at home, the Abbott family now face the terrors of the outside world. Forced to venture into the unknown, they realize that the creatures that hunt by sound are not the only threats that lurk beyond the sand path.",
-                "102",
+                102,
                 "2021-04-21",
                 "0"
             )
@@ -91,7 +91,7 @@ object DataDummy {
                 "Mulan",
                 "/aKx1ARwG55zZ0GpRvU2WrGrCG9o.jpg",
                 "When the Emperor of China issues a decree that one man per family must serve in the Imperial Chinese Army to defend the country from Huns, Hua Mulan, the eldest daughter of an honored warrior, steps in to take the place of her ailing father. She is spirited, determined and quick on her feet. Disguised as a man by the name of Hua Jun, she is tested every step of the way and must harness her innermost strength and embrace her true potential.",
-                "115",
+                115,
                 "2020-09-04",
                 "7.3"
             )
@@ -102,7 +102,7 @@ object DataDummy {
                 "A Babysitter's Guide to Monster Hunting",
                 "/bkld8Me0WiLWipLORRNfF1yIPHu.jpg",
                 "Recruited by a secret society of babysitters, a high schooler battles the Boogeyman and his monsters when they nab the boy she's watching on Halloween.",
-                "94",
+                94,
                 "2020-10-14",
                 "6.1"
             )
@@ -113,7 +113,7 @@ object DataDummy {
                 "Ava",
                 "/qzA87Wf4jo1h8JMk9GilyIYvwsA.jpg",
                 "A black ops assassin is forced to fight for her own survival after a job goes dangerously wrong.",
-                "96",
+                96,
                 "2020-07-02",
                 "5.8"
             )
@@ -122,7 +122,7 @@ object DataDummy {
         return movies
     }
 
-    fun generateDummyTvShows(): ArrayList<TvShowEntity> {
+    fun generateDummyTvShows(): List<TvShowEntity> {
         val tvShow = ArrayList<TvShowEntity>()
 
         tvShow.add(

@@ -32,6 +32,15 @@
                 android:value="com.example.jetpackprosubmission.ui.home.HomeActivity" />
         </activity>
         <activity
+            android:name="com.example.jetpackprosubmission.ui.favorite.FavoriteActivity"
+            android:label="@string/favorite"
+            android:parentActivityName="com.example.jetpackprosubmission.ui.home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jetpackprosubmission.ui.home.HomeActivity" />
+        </activity>
+        <activity
             android:name="com.example.jetpackprosubmission.ui.splash.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

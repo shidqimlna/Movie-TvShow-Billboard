@@ -1,15 +1,18 @@
 package com.example.jetpackprosubmission.data.source.remote
 
-import com.example.jetpackprosubmission.data.source.local.entity.MovieEntity
-import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.jetpackprosubmission.data.source.remote.response.MovieApiItem
 import com.example.jetpackprosubmission.data.source.remote.response.MovieApiResponse
+import com.example.jetpackprosubmission.data.source.remote.response.TvShowApiItem
 import com.example.jetpackprosubmission.data.source.remote.response.TvShowApiResponse
 import com.example.jetpackprosubmission.util.IdlingResource
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RemoteDataSource private constructor(private val mainApiInterface: MainApiInterface) {
+class RemoteDataSource constructor(private val mainApiInterface: MainApiInterface) {
 
     companion object {
 
@@ -21,11 +24,11 @@ class RemoteDataSource private constructor(private val mainApiInterface: MainApi
             }
     }
 
-    fun getMovieList(callback: LoadMoviesCallback) {
+    fun getMovieList(): LiveData<ApiResponse<List<MovieApiItem>>> {
         IdlingResource.increment()
+        val result = MutableLiveData<ApiResponse<List<MovieApiItem>>>()
         mainApiInterface.getMovieList()
             .enqueue(object : Callback<MovieApiResponse> {
-
                 override fun onResponse(
                     call: Call<MovieApiResponse>,
                     response: Response<MovieApiResponse>
@@ -33,50 +36,61 @@ class RemoteDataSource private constructor(private val mainApiInterface: MainApi
                     try {
                         IdlingResource.decrement()
                         if (response.isSuccessful) {
-                            val movieResponse: List<MovieEntity> =
+                            val movieResponse: List<MovieApiItem> =
                                 response.body()?.results ?: emptyList()
-                            callback.onAllMoviesReceived(movieResponse)
+                            result.value = ApiResponse.success(movieResponse)
+                            Log.i(
+                                "REMOTEDATASOUCRE",
+                                "REMOTEDATASOUCRE :" + movieResponse.get(0).title
+                            )
                         }
                     } catch (e: Exception) {
+                        Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : EXCEPT")
                         throw Exception(e.message.toString())
                     }
                 }
 
                 override fun onFailure(call: Call<MovieApiResponse>, t: Throwable) {
+                    IdlingResource.decrement()
+                    Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : FAIL")
                     throw Exception(t.message.toString())
                 }
             })
+        return result
     }
 
-    fun getMovieDetail(id: String?, callback: LoadMovieDetailCallback) {
+    fun getMovieDetail(id: String?): LiveData<ApiResponse<MovieApiItem>> {
         IdlingResource.increment()
-        mainApiInterface.getMovieDetail(id).enqueue(object : Callback<MovieEntity> {
+        val result = MutableLiveData<ApiResponse<MovieApiItem>>()
+        mainApiInterface.getMovieDetail(id).enqueue(object : Callback<MovieApiItem> {
             override fun onResponse(
-                call: Call<MovieEntity>,
-                response: Response<MovieEntity>
+                call: Call<MovieApiItem>,
+                response: Response<MovieApiItem>
             ) {
                 try {
                     IdlingResource.decrement()
-                    val movieResponse = response.body()
-                    if (movieResponse != null) {
-                        callback.onDetailMovieReceived(movieResponse)
+                    if (response.isSuccessful) {
+                        val movieResponse = response.body()
+                        if (movieResponse != null) result.value = ApiResponse.success(movieResponse)
                     }
                 } catch (e: Exception) {
                     throw Exception(e.message.toString())
                 }
             }
 
-            override fun onFailure(call: Call<MovieEntity>, t: Throwable) {
+            override fun onFailure(call: Call<MovieApiItem>, t: Throwable) {
+                IdlingResource.decrement()
                 throw Exception(t.message.toString())
             }
         })
+        return result
     }
 
-    fun getTvShowList(callback: LoadTvShowsCallback) {
+    fun getTvShowList(): LiveData<ApiResponse<List<TvShowApiItem>>> {
         IdlingResource.increment()
+        val result = MutableLiveData<ApiResponse<List<TvShowApiItem>>>()
         mainApiInterface.getTvShowList()
             .enqueue(object : Callback<TvShowApiResponse> {
-
                 override fun onResponse(
                     call: Call<TvShowApiResponse>,
                     response: Response<TvShowApiResponse>
@@ -84,9 +98,9 @@ class RemoteDataSource private constructor(private val mainApiInterface: MainApi
                     try {
                         IdlingResource.decrement()
                         if (response.isSuccessful) {
-                            val tvShowResponse: List<TvShowEntity> =
+                            val tvShowResponse: List<TvShowApiItem> =
                                 response.body()?.results ?: emptyList()
-                            callback.onAllTvShowsReceived(tvShowResponse)
+                            result.value = ApiResponse.success(tvShowResponse)
                         }
                     } catch (e: Exception) {
                         throw Exception(e.message.toString())
@@ -94,50 +108,41 @@ class RemoteDataSource private constructor(private val mainApiInterface: MainApi
                 }
 
                 override fun onFailure(call: Call<TvShowApiResponse>, t: Throwable) {
+                    IdlingResource.decrement()
                     throw Exception(t.message.toString())
                 }
             })
+        return result
     }
 
-    fun getTvShowDetail(id: String?, callback: LoadTvShowDetailCallback) {
+    fun getTvShowDetail(id: String?): LiveData<ApiResponse<TvShowApiItem>> {
         IdlingResource.increment()
-        mainApiInterface.getTvShowDetail(id).enqueue(object : Callback<TvShowEntity> {
+        val result = MutableLiveData<ApiResponse<TvShowApiItem>>()
+        mainApiInterface.getTvShowDetail(id).enqueue(object : Callback<TvShowApiItem> {
             override fun onResponse(
-                call: Call<TvShowEntity>,
-                response: Response<TvShowEntity>
+                call: Call<TvShowApiItem>,
+                response: Response<TvShowApiItem>
             ) {
                 try {
                     IdlingResource.decrement()
-                    val tvShowResponse = response.body()
-                    if (tvShowResponse != null) {
-                        callback.onDetailTvShowReceived(tvShowResponse)
+                    if (response.isSuccessful) {
+                        val tvShowResponse = response.body()
+                        if (tvShowResponse != null) result.value =
+                            ApiResponse.success(tvShowResponse)
                     }
                 } catch (e: Exception) {
                     throw Exception(e.message.toString())
                 }
             }
 
-            override fun onFailure(call: Call<TvShowEntity>, t: Throwable) {
+            override fun onFailure(call: Call<TvShowApiItem>, t: Throwable) {
+                IdlingResource.decrement()
                 throw Exception(t.message.toString())
             }
         })
+        return result
     }
 
-    interface LoadMoviesCallback {
-        fun onAllMoviesReceived(movieResponse: List<MovieEntity>)
-    }
-
-    interface LoadMovieDetailCallback {
-        fun onDetailMovieReceived(movieResponse: MovieEntity)
-    }
-
-    interface LoadTvShowsCallback {
-        fun onAllTvShowsReceived(tvShowResponse: List<TvShowEntity>)
-    }
-
-    interface LoadTvShowDetailCallback {
-        fun onDetailTvShowReceived(tvShowResponse: TvShowEntity)
-    }
 }
 
 

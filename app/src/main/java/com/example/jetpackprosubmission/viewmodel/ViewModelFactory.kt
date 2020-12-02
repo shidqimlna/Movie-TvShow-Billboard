@@ -3,6 +3,7 @@ package com.example.jetpackprosubmission.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.jetpackprosubmission.data.MainRepository
+import com.example.jetpackprosubmission.ui.favorite.FavoriteViewModel
 import com.example.jetpackprosubmission.ui.movie.MovieViewModel
 import com.example.jetpackprosubmission.ui.tvshow.TvShowViewModel
 
@@ -17,6 +18,9 @@ class ViewModelFactory constructor(private val repository: MainRepository) :
                 }
                 isAssignableFrom(TvShowViewModel::class.java) -> {
                     TvShowViewModel(repository) as T
+                }
+                isAssignableFrom(FavoriteViewModel::class.java) -> {
+                    FavoriteViewModel(repository) as T
                 }
                 else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }
