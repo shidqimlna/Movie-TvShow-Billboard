@@ -1,12 +1,13 @@
 package com.example.jetpackprosubmission.ui.home
 
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.rule.ActivityTestRule
@@ -41,15 +42,17 @@ class HomeActivityTest {
 
     @Test
     fun loadMovies() {
-        Espresso.onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView))
+        onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView))
+        onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(20))
     }
 
     @Test
     fun loadDetailMovie() {
-        Espresso.onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView)).also {
+        onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView)).also {
             movieTitle = TitleUtil.getMovieTitle(it, 0)
         }.perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -57,25 +60,62 @@ class HomeActivityTest {
                 ViewActions.click()
             )
         )
-        Espresso.onView(ViewMatchers.withId(R.id.activity_detail_movie_tv_title))
+        onView(ViewMatchers.withId(R.id.activity_detail_movie_tv_title))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.activity_detail_movie_tv_title))
+        onView(ViewMatchers.withId(R.id.activity_detail_movie_tv_title))
             .check(ViewAssertions.matches(ViewMatchers.withText(movieTitle)))
     }
 
     @Test
-    fun loadTvShows() {
-        Espresso.onView(ViewMatchers.withId(R.id.menu_tvshow)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView))
+    fun loadDetailFavoriteMovie() {
+        onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView))
+        onView(ViewMatchers.withId(R.id.fragment_movie_recyclerView)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                ViewActions.click()
+            )
+        )
+        onView(ViewMatchers.withId(R.id.activity_detail_movie_fab_favorite)).perform(ViewActions.click())
+        onView(isRoot()).perform(ViewActions.pressBack())
+        onView(ViewMatchers.withId(R.id.activity_main_fab_favorite)).perform(
+            ViewActions.click()
+        )
+        onView(ViewMatchers.withId(R.id.fragment_fav_movie_recyclerView)).check(
+            ViewAssertions.matches(
+                ViewMatchers.isDisplayed()
+            )
+        )
+        onView(ViewMatchers.withId(R.id.fragment_fav_movie_recyclerView)).also {
+            movieTitle = TitleUtil.getMovieTitle(it, 0)
+        }.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                ViewActions.click()
+            )
+        )
+        onView(ViewMatchers.withId(R.id.activity_detail_movie_tv_title))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.activity_detail_movie_tv_title))
+            .check(ViewAssertions.matches(ViewMatchers.withText(movieTitle)))
+        onView(ViewMatchers.withId(R.id.activity_detail_movie_fab_favorite)).perform(ViewActions.click())
+    }
+
+    @Test
+    fun loadTvShows() {
+        onView(ViewMatchers.withId(R.id.menu_tvshow)).perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(20))
     }
 
     @Test
     fun loadDetailTvShow() {
-        Espresso.onView(ViewMatchers.withId(R.id.menu_tvshow)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView)).also {
+        onView(ViewMatchers.withId(R.id.menu_tvshow)).perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView)).also {
             tvShowTitle = TitleUtil.getTvShowTitle(it, 0)
         }.perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -83,9 +123,46 @@ class HomeActivityTest {
                 ViewActions.click()
             )
         )
-        Espresso.onView(ViewMatchers.withId(R.id.activity_detail_tvshow_tv_title))
+        onView(ViewMatchers.withId(R.id.activity_detail_tvshow_tv_title))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.activity_detail_tvshow_tv_title))
+        onView(ViewMatchers.withId(R.id.activity_detail_tvshow_tv_title))
             .check(ViewAssertions.matches(ViewMatchers.withText(tvShowTitle)))
+    }
+
+    @Test
+    fun loadDetailFavoriteTvShow() {
+        onView(ViewMatchers.withId(R.id.menu_tvshow)).perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.fragment_tvShow_recyclerView)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                ViewActions.click()
+            )
+        )
+        onView(ViewMatchers.withId(R.id.activity_detail_tvshow_fab_favorite)).perform(ViewActions.click())
+        onView(isRoot()).perform(ViewActions.pressBack())
+        onView(ViewMatchers.withId(R.id.activity_main_fab_favorite)).perform(
+            ViewActions.click()
+        )
+        onView(ViewMatchers.withId(R.id.menu_tvshow)).perform(ViewActions.click())
+        onView(ViewMatchers.withId(R.id.fragment_fav_tvShow_recyclerView)).check(
+            ViewAssertions.matches(
+                ViewMatchers.isDisplayed()
+            )
+        )
+        onView(ViewMatchers.withId(R.id.fragment_fav_tvShow_recyclerView)).also {
+            tvShowTitle = TitleUtil.getTvShowTitle(it, 0)
+        }.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                ViewActions.click()
+            )
+        )
+        onView(ViewMatchers.withId(R.id.activity_detail_tvshow_tv_title))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withId(R.id.activity_detail_tvshow_tv_title))
+            .check(ViewAssertions.matches(ViewMatchers.withText(tvShowTitle)))
+        onView(ViewMatchers.withId(R.id.activity_detail_tvshow_fab_favorite)).perform(ViewActions.click())
     }
 }

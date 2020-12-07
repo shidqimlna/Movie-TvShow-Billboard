@@ -59,10 +59,6 @@ class TvShowFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
                 adapter = tvShowAdapter
             }
-
-//            fragment_tvShow_recyclerView.setHasFixedSize(true)
-//            fragment_tvShow_recyclerView.layoutManager = LinearLayoutManager(context)
-//            fragment_tvShow_recyclerView.adapter = tvShowAdapter
         }
     }
 }

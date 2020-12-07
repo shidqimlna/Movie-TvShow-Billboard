@@ -1,4 +1,4 @@
-package com.example.jetpackprosubmission.ui.favorite.tvshow
+package com.example.jetpackprosubmission.ui.favorite.favtvshow
 
 import android.os.Bundle
 import android.view.LayoutInflater

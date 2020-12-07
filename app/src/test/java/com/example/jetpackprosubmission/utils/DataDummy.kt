@@ -2,9 +2,48 @@ package com.example.jetpackprosubmission.utils
 
 import com.example.jetpackprosubmission.data.source.local.entity.MovieEntity
 import com.example.jetpackprosubmission.data.source.local.entity.TvShowEntity
+import com.example.jetpackprosubmission.data.source.remote.response.GenreApiItem
+import com.example.jetpackprosubmission.data.source.remote.response.MovieApiItem
+import com.example.jetpackprosubmission.data.source.remote.response.TvShowApiItem
 import java.util.*
 
 object DataDummy {
+    fun generateDummyMovieDetail(): MovieApiItem {
+        val listGenres = ArrayList<GenreApiItem>()
+        listGenres.add(GenreApiItem("1", "Action"))
+        listGenres.add(GenreApiItem("2", "Drama"))
+
+        return MovieApiItem(
+            id = "724989",
+            voteAverage = "3.7",
+            title = "Hard Kill",
+            releaseDate = "2020-10-23",
+            posterPath = "/ugZW8ocsrfgI95pnQ7wrmKDxIe.jpg",
+            overview = "The work of billionaire tech CEO Donovan Chalmers is so valuable that he hires mercenaries to protect it, and a terrorist group kidnaps his daughter just to get it.",
+            runtime = 113,
+            genres = listGenres
+        )
+    }
+
+    fun generateDummyTvShowDetail(): TvShowApiItem {
+        val listGenres = ArrayList<GenreApiItem>()
+        listGenres.add(GenreApiItem("1", "Action"))
+        listGenres.add(GenreApiItem("2", "Drama"))
+
+        return TvShowApiItem(
+            id = "76479",
+            name = "The Boys",
+            voteAverage = "8.4",
+            firstAirDate = "2019-07-25",
+            lastAirDate = "2020-10-09",
+            posterPath = "/mY7SeH4HFFxW1hiI6cWuwCRKptN.jpg",
+            overview = "A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
+            numberOfEpisodes = "16",
+            numberOfSeasons = "2",
+            genres = listGenres
+        )
+    }
+
     fun generateDummyMovies(): List<MovieEntity> {
         val movies = ArrayList<MovieEntity>()
 

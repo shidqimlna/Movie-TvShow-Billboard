@@ -192,6 +192,12 @@ class FakeMainRepository(
         return LivePagedListBuilder(localDataSource.getFavoriteTvShow(), config).build()
     }
 
+    override fun checkFavoriteMovie(favoriteId: String): LiveData<Int> =
+        localDataSource.checkFavoriteMovie(favoriteId)
+
+    override fun checkFavoriteTvShow(favoriteId: String): LiveData<Int> =
+        localDataSource.checkFavoriteTvShow(favoriteId)
+
     override fun insertFavoriteMovie(favoriteMovieEntity: FavoriteMovieEntity) {
         appExecutors.diskIO().execute { localDataSource.insertFavoriteMovie(favoriteMovieEntity) }
     }

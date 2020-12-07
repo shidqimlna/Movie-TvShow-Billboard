@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.jetpackprosubmission.R
-import com.example.jetpackprosubmission.ui.favorite.movie.FavMovieFragment
-import com.example.jetpackprosubmission.ui.favorite.tvshow.FavTvShowFragment
+import com.example.jetpackprosubmission.ui.favorite.favmovie.FavMovieFragment
+import com.example.jetpackprosubmission.ui.favorite.favtvshow.FavTvShowFragment
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 import kotlinx.android.synthetic.main.activity_favorite.*
 
