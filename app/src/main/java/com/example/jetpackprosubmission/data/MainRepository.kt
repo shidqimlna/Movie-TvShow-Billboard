@@ -211,6 +211,9 @@ class MainRepository constructor(
         return LivePagedListBuilder(localDataSource.getFavoriteTvShow(), config).build()
     }
 
+    override fun checkFavorite(favoriteId: String): LiveData<Int> =
+        localDataSource.checkFavorite(favoriteId)
+
     override fun existFavoriteMovie(title: String?): Boolean {
         return localDataSource.existFavoriteMovie(title)
     }
@@ -230,5 +233,14 @@ class MainRepository constructor(
     override fun deleteFavoriteTvShow(favoriteTvShowEntity: FavoriteTvShowEntity) {
         appExecutors.diskIO().execute { localDataSource.deleteFavoriteTvShow(favoriteTvShowEntity) }
     }
+
+
+    /////
+
+//    override fun insertFavorite(favorite: favoriteMovieEntity) =
+//        appExecutors.diskIO().execute { localDataSource.insertFavorite(favorite) }
+//
+//    override fun deleteFavorite(favorite: favoriteMovieEntity) =
+//        appExecutors.diskIO().execute { localDataSource.deleteFavorite(favorite) }
 
 }

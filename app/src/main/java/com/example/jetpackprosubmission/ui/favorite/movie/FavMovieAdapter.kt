@@ -65,7 +65,6 @@ class FavMovieAdapter :
                     item_movie_cardView.setOnClickListener {
                         val intent = Intent(context, MovieDetailActivity::class.java)
                         intent.putExtra(MovieDetailActivity.EXTRA_MOVIE_FAVORITE, movie)
-                        intent.putExtra(MovieDetailActivity.FAVORITED, true)
                         context.startActivity(intent)
                     }
                 }

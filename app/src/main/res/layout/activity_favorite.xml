@@ -24,7 +24,7 @@
         android:background="@color/colorWhite"
         android:elevation="8dp"
         android:padding="8dp"
-        app:cnb_menuResource="@menu/menu"
+        app:cnb_menuResource="@menu/menu_navbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

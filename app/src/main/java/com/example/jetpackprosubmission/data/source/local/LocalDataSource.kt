@@ -53,6 +53,8 @@ class LocalDataSource private constructor(private val mainDao: MainDao) {
     fun getFavoriteTvShow(): DataSource.Factory<Int, FavoriteTvShowEntity> =
         mainDao.getFavoriteTvShows()
 
+    fun checkFavorite(favoriteId: String): LiveData<Int> = mainDao.checkFavorite(favoriteId)
+
     fun existFavoriteMovie(title: String?): Boolean =
         mainDao.existFavoriteMovie(title)
 
