@@ -21,8 +21,11 @@ class TvShowDetailActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_TVSHOW_FAVORITE = "extra_tvshow_favorite"
         const val EXTRA_TVSHOW = "extra_tvshow"
-        const val FAVORITED = "isFavorited"
     }
+
+    private lateinit var viewModel: TvShowViewModel
+    private var isFavorite = false
+    lateinit var tvShowFavorite: TvShowEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +33,7 @@ class TvShowDetailActivity : AppCompatActivity() {
         setSupportActionBar(activity_detail_tvshow_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val viewModel = ViewModelProvider(
+        viewModel = ViewModelProvider(
             this,
             Injection.provideViewModelFactory(this)
         )[TvShowViewModel::class.java]
@@ -39,53 +42,61 @@ class TvShowDetailActivity : AppCompatActivity() {
 
         val extras = intent.extras
         if (extras != null) {
-            val isFavorite = extras.getBoolean(FAVORITED, false)
             val extraTvShow = extras.getParcelable<TvShowEntity>(EXTRA_TVSHOW)
-            val extraTvShowFavorite = convertFavorite(extras.getParcelable(EXTRA_TVSHOW_FAVORITE))
+            val extraTvShowFavorite =
+                extras.getParcelable<FavoriteTvShowEntity>(EXTRA_TVSHOW_FAVORITE)
 
-            when (isFavorite) {
-                true -> {
-                    activity_detail_tvshow_progressBar_layout.visibility = View.GONE
-                    loadData(extraTvShowFavorite, viewModel, isFavorite)
-                }
-                false -> {
-                    viewModel.setTvShow(extraTvShow?.id)
-                    viewModel.getTvShowDetail().observe(this, { tvShow ->
-                        if (tvShow != null) {
-                            when (tvShow.status) {
-                                Status.LOADING -> {
-                                    activity_detail_tvshow_progressBar_layout.visibility =
-                                        View.VISIBLE
-//                                    isLoading = true
-                                }
-                                Status.SUCCESS -> {
-                                    activity_detail_tvshow_progressBar_layout.visibility = View.GONE
-//                                    isLoading = false
-                                    if (tvShow.data != null)
-                                        loadData(tvShow.data, viewModel, isFavorite)
-//                                        showFragment(DetailTvShowFragment.getInstance(tvShow.data))
-                                }
-                                Status.ERROR -> {
-                                    activity_detail_tvshow_progressBar_layout.visibility = View.GONE
-//                                    isLoading = false
-                                    Toast.makeText(
-                                        this,
-                                        resources.getString(R.string.error_message),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        }
-                    })
-                }
-            }
+            if (extraTvShowFavorite != null) {
+                tvShowFavorite = convertFavorite(extraTvShowFavorite)
+            } else if (extraTvShow != null) tvShowFavorite = extraTvShow
+
+            viewModel.setTvShowId(tvShowFavorite.id)
+            viewModel.checkFavoriteTvShow()?.observe(this, { state ->
+                isFavorite = state != null
+                setData(viewModel)
+            })
         }
     }
 
-    private fun loadData(tvShow: TvShowEntity?, viewModel: TvShowViewModel, isFavorite: Boolean) {
+    private fun setData(viewModel: TvShowViewModel) {
+        if (isFavorite) {
+            activity_detail_tvshow_progressBar_layout.visibility = View.GONE
+            activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favorite_fill)
+            activity_detail_tvshow_fab_favorite.setOnClickListener {
+                viewModel.deleteFavoriteTvShow(tvShowFavorite)
+            }
+            loadData(tvShowFavorite)
+        } else {
+            activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favorite_empty)
+            viewModel.setTvShowId(tvShowFavorite.id)
+            viewModel.getTvShowDetail().observe(this, { tvShow ->
+                if (tvShow != null) {
+                    if (tvShow.status == Status.SUCCESS) {
+                        activity_detail_tvshow_progressBar_layout.visibility = View.GONE
+                        if (tvShow.data != null) {
+                            tvShowFavorite = tvShow.data!!
+                            activity_detail_tvshow_fab_favorite.setOnClickListener {
+                                viewModel.insertFavoriteTvShow(tvShowFavorite)
+                            }
+                            loadData(tvShowFavorite)
+                        }
+                    } else if (tvShow.status == Status.ERROR) {
+                        activity_detail_tvshow_progressBar_layout.visibility = View.GONE
+                        Toast.makeText(
+                            this,
+                            resources.getString(R.string.error_message),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            })
+        }
+    }
+
+    private fun loadData(tvShow: TvShowEntity?) {
         tvShow?.let {
             Picasso.get().load(IMAGE_URL + it.posterPath).fit()
-                .placeholder(R.drawable.loading_decor).error(R.drawable.ic_imageerror)
+                .placeholder(R.drawable.loading_decor).error(R.drawable.ic_error)
                 .into(activity_detail_tvshow_iv_poster)
             activity_detail_tvshow_tv_title.text = it.name
             activity_detail_tvshow_tv_rating.text = it.voteAverage
@@ -96,23 +107,6 @@ class TvShowDetailActivity : AppCompatActivity() {
             activity_detail_tvshow_tv_lastairdate.text = it.lastAirDate
             activity_detail_tvshow_tv_genre.text = it.genres
             activity_detail_tvshow_ib_share.setOnClickListener { onShareClick(tvShow) }
-
-            activity_detail_tvshow_fab_favorite.apply {
-                when (isFavorite) {
-                    true -> {
-                        activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favourite_fill)
-                        setOnClickListener {
-                            viewModel.deleteFavoriteTvShow(tvShow)
-                        }
-                    }
-                    false -> {
-                        activity_detail_tvshow_fab_favorite.setImageResource(R.drawable.ic_favourite_empty)
-                        setOnClickListener {
-                            viewModel.insertFavoriteTvShow(tvShow)
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -124,21 +118,20 @@ class TvShowDetailActivity : AppCompatActivity() {
             .setChooserTitle("Share")
             .setText(getString(R.string.share_text, tvShow?.name))
             .startChooser()
-
     }
 
-    private fun convertFavorite(favoriteTvShowEntity: FavoriteTvShowEntity?): TvShowEntity {
+    private fun convertFavorite(favoriteTvShowEntity: FavoriteTvShowEntity): TvShowEntity {
         return TvShowEntity(
-//            id = favoriteTvShowEntity?.id,
-            name = favoriteTvShowEntity?.name,
-            posterPath = favoriteTvShowEntity?.posterPath,
-            overview = favoriteTvShowEntity?.overview,
-            firstAirDate = favoriteTvShowEntity?.firstAirDate,
-            lastAirDate = favoriteTvShowEntity?.lastAirDate,
-            voteAverage = favoriteTvShowEntity?.voteAverage,
-            numberOfEpisodes = favoriteTvShowEntity?.numberOfEpisodes,
-            numberOfSeasons = favoriteTvShowEntity?.numberOfSeasons,
-            genres = favoriteTvShowEntity?.genres
+            id = favoriteTvShowEntity.id,
+            name = favoriteTvShowEntity.name,
+            posterPath = favoriteTvShowEntity.posterPath,
+            overview = favoriteTvShowEntity.overview,
+            firstAirDate = favoriteTvShowEntity.firstAirDate,
+            lastAirDate = favoriteTvShowEntity.lastAirDate,
+            voteAverage = favoriteTvShowEntity.voteAverage,
+            numberOfEpisodes = favoriteTvShowEntity.numberOfEpisodes,
+            numberOfSeasons = favoriteTvShowEntity.numberOfSeasons,
+            genres = favoriteTvShowEntity.genres
         )
     }
 }

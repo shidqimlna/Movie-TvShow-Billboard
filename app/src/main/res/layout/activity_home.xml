@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:contentDescription="@string/button_for_accessing_favorite"
-        android:src="@drawable/ic_favourite_fill"
+        android:src="@drawable/ic_favorite_fill"
         app:layout_constraintBottom_toTopOf="@id/activity_main_bottomnavigationbar"
         app:layout_constraintEnd_toEndOf="parent" />
 

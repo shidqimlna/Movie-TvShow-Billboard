@@ -33,12 +33,6 @@ class MovieAdapter : PagedListAdapter<MovieEntity, MovieAdapter.ListViewHolder>(
         }
     }
 
-//    fun setData(entities: Collection<MovieEntity>) {
-//        listMovies.clear()
-//        listMovies.addAll(entities)
-//        notifyDataSetChanged()
-//    }
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder =
         ListViewHolder(
             LayoutInflater.from(viewGroup.context).inflate(R.layout.item_movie, viewGroup, false)
@@ -50,15 +44,12 @@ class MovieAdapter : PagedListAdapter<MovieEntity, MovieAdapter.ListViewHolder>(
             holder.bindView(movies)
     }
 
-//    override fun getItemCount(): Int = listMovies.size
-
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindView(movie: MovieEntity?) {
             movie?.let {
                 with(itemView) {
-//                    Log.i("ADAPTER", "ADAPTER :" + movie.title)
                     Picasso.get().load(IMAGE_URL + it.posterPath).fit()
-                        .placeholder(R.drawable.loading_decor).error(R.drawable.ic_imageerror)
+                        .placeholder(R.drawable.loading_decor).error(R.drawable.ic_error)
                         .into(item_movie_iv_poster)
                     item_movie_tv_title.text = it.title
                     item_movie_tv_rating.text = it.voteAverage

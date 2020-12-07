@@ -51,7 +51,7 @@ class FavTvShowAdapter :
             tvShow?.let {
                 with(itemView) {
                     Picasso.get().load(IMAGE_URL + it.posterPath).fit()
-                        .placeholder(R.drawable.loading_decor).error(R.drawable.ic_imageerror)
+                        .placeholder(R.drawable.loading_decor).error(R.drawable.ic_error)
                         .into(item_tvshow_iv_poster)
                     item_tvshow_tv_title.text = it.name
                     item_tvshow_tv_rating.text = it.voteAverage
@@ -59,7 +59,6 @@ class FavTvShowAdapter :
                     item_tvshow_cardView.setOnClickListener {
                         val intent = Intent(context, TvShowDetailActivity::class.java)
                         intent.putExtra(TvShowDetailActivity.EXTRA_TVSHOW_FAVORITE, tvShow)
-                        intent.putExtra(TvShowDetailActivity.FAVORITED, true)
                         context.startActivity(intent)
                     }
                 }

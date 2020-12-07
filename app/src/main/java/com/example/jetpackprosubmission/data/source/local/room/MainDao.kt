@@ -48,10 +48,10 @@ interface MainDao {
     fun getFavoriteTvShows(): DataSource.Factory<Int, FavoriteTvShowEntity>
 
     @Query("SELECT 1 FROM favoriteMovieEntity WHERE id = :favoriteId")
-    fun checkFavorite(favoriteId: String): LiveData<Int>
+    fun checkFavoriteMovie(favoriteId: String): LiveData<Int>
 
-    @Query("SELECT EXISTS (SELECT 1 FROM favoriteMovieEntity WHERE title = :title)")
-    fun existFavoriteMovie(title: String?): Boolean
+    @Query("SELECT 1 FROM favoriteTvShowEntity WHERE id = :favoriteId")
+    fun checkFavoriteTvShow(favoriteId: String): LiveData<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFavoriteMovie(favoriteEntity: FavoriteMovieEntity)

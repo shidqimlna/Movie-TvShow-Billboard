@@ -33,12 +33,6 @@ class TvShowAdapter : PagedListAdapter<TvShowEntity, TvShowAdapter.ListViewHolde
         }
     }
 
-//    fun setData(entities: Collection<TvShowEntity>) {
-//        listTvShows.clear()
-//        listTvShows.addAll(entities)
-//        notifyDataSetChanged()
-//    }
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder =
         ListViewHolder(
             LayoutInflater.from(viewGroup.context).inflate(R.layout.item_tvshow, viewGroup, false)
@@ -50,14 +44,12 @@ class TvShowAdapter : PagedListAdapter<TvShowEntity, TvShowAdapter.ListViewHolde
             holder.bindView(tvShow)
     }
 
-//    override fun getItemCount(): Int = listTvShows.size
-
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindView(tvShow: TvShowEntity?) {
             tvShow?.let {
                 with(itemView) {
                     Picasso.get().load(IMAGE_URL + it.posterPath).fit()
-                        .placeholder(R.drawable.loading_decor).error(R.drawable.ic_imageerror)
+                        .placeholder(R.drawable.loading_decor).error(R.drawable.ic_error)
                         .into(item_tvshow_iv_poster)
                     item_tvshow_tv_title.text = it.name
                     item_tvshow_tv_rating.text = it.voteAverage

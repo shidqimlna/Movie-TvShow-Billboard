@@ -25,6 +25,7 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private lateinit var viewModel: MovieViewModel
+    lateinit var movieFavorite: MovieEntity
     private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,63 +45,58 @@ class MovieDetailActivity : AppCompatActivity() {
         if (extras != null) {
             val extraMovie = extras.getParcelable<MovieEntity>(EXTRA_MOVIE)
             val extraMovieFavorite = extras.getParcelable<FavoriteMovieEntity>(EXTRA_MOVIE_FAVORITE)
-            lateinit var movieFavorite: MovieEntity
+
             if (extraMovieFavorite != null) {
                 movieFavorite = convertFavorite(extraMovieFavorite)
             } else if (extraMovie != null) movieFavorite = extraMovie
+
             viewModel.setMovieId(movieFavorite.id)
-            viewModel.checkFavorite()?.observe(this, { state ->
+            viewModel.checkFavoriteMovie()?.observe(this, { state ->
                 isFavorite = state != null
-                setData(movieFavorite, viewModel)
+                setData(viewModel)
             })
         }
     }
 
-    private fun setData(movieEntity: MovieEntity, viewModel: MovieViewModel) {
+    private fun setData(viewModel: MovieViewModel) {
         if (isFavorite) {
-            viewModel.setMovieDetail(movieEntity)
             activity_detail_movie_progressBar_layout.visibility = View.GONE
-            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_fill)
-            loadData(movieEntity)
+            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favorite_fill)
             activity_detail_movie_fab_favorite.setOnClickListener {
-                viewModel.deleteFavoriteMovie(movieEntity)
+                viewModel.deleteFavoriteMovie(movieFavorite)
             }
+            loadData(movieFavorite)
         } else {
-            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favourite_empty)
-            viewModel.setMovieId(movieEntity.id)
+            activity_detail_movie_fab_favorite.setImageResource(R.drawable.ic_favorite_empty)
+            viewModel.setMovieId(movieFavorite.id)
             viewModel.getMovieDetail().observe(this, { movie ->
                 if (movie != null) {
-                    when (movie.status) {
-                        Status.LOADING -> {
-                            activity_detail_movie_progressBar_layout.visibility = View.VISIBLE
-                        }
-                        Status.SUCCESS -> {
+                    if (movie.status == Status.SUCCESS) {
+                        activity_detail_movie_progressBar_layout.visibility = View.GONE
+                        if (movie.data != null) {
+                            movieFavorite = movie.data!!
                             activity_detail_movie_fab_favorite.setOnClickListener {
-                                viewModel.insertFavoriteMovie(movieEntity)
+                                viewModel.insertFavoriteMovie(movieFavorite)
                             }
-                            activity_detail_movie_progressBar_layout.visibility = View.GONE
-                            if (movie.data != null) loadData(movie.data)
+                            loadData(movieFavorite)
                         }
-                        Status.ERROR -> {
-                            activity_detail_movie_progressBar_layout.visibility = View.GONE
-                            Toast.makeText(
-                                this,
-                                resources.getString(R.string.error_message),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                    } else if (movie.status == Status.ERROR) {
+                        activity_detail_movie_progressBar_layout.visibility = View.GONE
+                        Toast.makeText(
+                            this,
+                            resources.getString(R.string.error_message),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             })
         }
     }
 
-    private fun loadData(
-        movieEntity: MovieEntity?,
-    ) {
+    private fun loadData(movieEntity: MovieEntity?) {
         movieEntity?.let {
             Picasso.get().load(IMAGE_URL + it.posterPath).fit()
-                .placeholder(R.drawable.loading_decor).error(R.drawable.ic_imageerror)
+                .placeholder(R.drawable.loading_decor).error(R.drawable.ic_error)
                 .into(activity_detail_movie_iv_poster)
             activity_detail_movie_tv_title.text = it.title
             activity_detail_movie_tv_rating.text = it.voteAverage
@@ -120,7 +116,6 @@ class MovieDetailActivity : AppCompatActivity() {
             .setChooserTitle("Share")
             .setText(getString(R.string.share_text, movie?.title))
             .startChooser()
-
     }
 
     private fun convertFavorite(movie: FavoriteMovieEntity): MovieEntity {

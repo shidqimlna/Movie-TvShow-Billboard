@@ -23,9 +23,9 @@ interface MainDataSource {
 
     fun getAllFavoriteTvShow(): LiveData<PagedList<FavoriteTvShowEntity>>
 
-    fun checkFavorite(favoriteId: String): LiveData<Int>
+    fun checkFavoriteMovie(favoriteId: String): LiveData<Int>
 
-    fun existFavoriteMovie(id: String?): Boolean
+    fun checkFavoriteTvShow(favoriteId: String): LiveData<Int>
 
     fun insertFavoriteMovie(favoriteMovieEntity: FavoriteMovieEntity)
 

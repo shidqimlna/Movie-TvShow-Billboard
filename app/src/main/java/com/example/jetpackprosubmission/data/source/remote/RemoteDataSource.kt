@@ -43,10 +43,8 @@ class RemoteDataSource constructor(private val mainAPI: MainAPI) {
                                 result.value = ApiResponse.empty(ERROR_DATA)
                             else
                                 result.value = ApiResponse.success(movieResponse)
-//                            Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE :" + movieResponse.get(0).title)
                         } else result.value = ApiResponse.error(ERROR_RESPONSE)
                     } catch (e: Exception) {
-//                        Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : EXCEPT")
                         result.value = e.message?.let { ApiResponse.error(it) }
                         throw Exception(e.message.toString())
                     }
@@ -54,7 +52,6 @@ class RemoteDataSource constructor(private val mainAPI: MainAPI) {
 
                 override fun onFailure(call: Call<MovieApiResponse>, t: Throwable) {
                     IdlingResource.decrement()
-//                    Log.i("REMOTEDATASOUCRE", "REMOTEDATASOUCRE : FAIL")
                     result.value = t.message?.let { ApiResponse.error(it) }
                     throw Exception(t.message.toString())
                 }

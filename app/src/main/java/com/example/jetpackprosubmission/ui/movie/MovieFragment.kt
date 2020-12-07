@@ -40,7 +40,6 @@ class MovieFragment : Fragment() {
                         Status.SUCCESS -> {
                             fragment_movie_progress_bar.visibility = View.GONE
                             movieAdapter.submitList(movies.data)
-//                            Log.i("FRAGMENT", "FRAGMENT :" + movies.data?.get(0)?.title)
                             movieAdapter.notifyDataSetChanged()
                         }
                         Status.ERROR -> {
@@ -55,22 +54,11 @@ class MovieFragment : Fragment() {
                 }
             })
 
-//            viewModel.getMovieList().observe(this, { movies ->
-//                fragment_movie_progress_bar.visibility = View.GONE
-//                movieAdapter.submitList(movies.data)
-//                Log.i("FRAGMENT", "FRAGMENT 12 :" + movies.data?.get(0)?.title)
-//                movieAdapter.notifyDataSetChanged()
-//            })
-
             with(fragment_movie_recyclerView) {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context)
                 adapter = movieAdapter
             }
-
-//            fragment_movie_recyclerView.setHasFixedSize(true)
-//            fragment_movie_recyclerView.layoutManager = LinearLayoutManager(context)
-//            fragment_movie_recyclerView.adapter = movieAdapter
         }
     }
 }

@@ -12,13 +12,13 @@ import com.example.jetpackprosubmission.vo.Resource
 
 class TvShowViewModel(private val mainRepository: MainRepository) : ViewModel() {
     private var tvshowId = MutableLiveData<String>()
-    var tvShow: LiveData<Resource<TvShowEntity>>? =
+    private var tvShow: LiveData<Resource<TvShowEntity>>? =
         Transformations.switchMap(tvshowId) { mTvShowId ->
             mainRepository.getTvShowDetail(mTvShowId)
         }
-    var tvShows: LiveData<Resource<PagedList<TvShowEntity>>>? = null
+    private var tvShows: LiveData<Resource<PagedList<TvShowEntity>>>? = null
 
-    fun setTvShow(tvshowId: String?) {
+    fun setTvShowId(tvshowId: String?) {
         this.tvshowId.value = tvshowId
     }
 
@@ -31,6 +31,9 @@ class TvShowViewModel(private val mainRepository: MainRepository) : ViewModel() 
         if (tvShows == null) tvShows = mainRepository.getTvShowList()
         return tvShows as LiveData<Resource<PagedList<TvShowEntity>>>
     }
+
+    fun checkFavoriteTvShow(): LiveData<Int>? =
+        tvshowId.value?.let { mainRepository.checkFavoriteTvShow(it) }
 
     fun insertFavoriteTvShow(tvShowEntity: TvShowEntity) {
         val favorite = convertFavorite(tvShowEntity)

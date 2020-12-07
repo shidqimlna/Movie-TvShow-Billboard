@@ -64,17 +64,15 @@ class MainRepository constructor(
             public override fun saveCallResult(data: List<MovieApiItem>) {
                 val movieList = ArrayList<MovieEntity>()
                 for (response in data) {
-//                    Log.i("REPOS", "REPOS RESPONSE SAVECALL:" + response.title)
                     val movie = MovieEntity(
                         id = response.id,
                         title = response.title,
+                        overview = response.overview,
                         posterPath = response.posterPath,
-                        voteAverage = response.voteAverage,
-                        overview = response.overview
+                        voteAverage = response.voteAverage
                     )
                     movieList.add(movie)
                 }
-//                Log.i("REPOS", "REPOS INSERT LOCAL:" + movieList.get(0).title)
                 localDataSource.insertMovies(movieList)
             }
         }.asLiveData()
@@ -211,12 +209,11 @@ class MainRepository constructor(
         return LivePagedListBuilder(localDataSource.getFavoriteTvShow(), config).build()
     }
 
-    override fun checkFavorite(favoriteId: String): LiveData<Int> =
-        localDataSource.checkFavorite(favoriteId)
+    override fun checkFavoriteMovie(favoriteId: String): LiveData<Int> =
+        localDataSource.checkFavoriteMovie(favoriteId)
 
-    override fun existFavoriteMovie(title: String?): Boolean {
-        return localDataSource.existFavoriteMovie(title)
-    }
+    override fun checkFavoriteTvShow(favoriteId: String): LiveData<Int> =
+        localDataSource.checkFavoriteTvShow(favoriteId)
 
     override fun insertFavoriteMovie(favoriteMovieEntity: FavoriteMovieEntity) {
         appExecutors.diskIO().execute { localDataSource.insertFavoriteMovie(favoriteMovieEntity) }
@@ -233,14 +230,5 @@ class MainRepository constructor(
     override fun deleteFavoriteTvShow(favoriteTvShowEntity: FavoriteTvShowEntity) {
         appExecutors.diskIO().execute { localDataSource.deleteFavoriteTvShow(favoriteTvShowEntity) }
     }
-
-
-    /////
-
-//    override fun insertFavorite(favorite: favoriteMovieEntity) =
-//        appExecutors.diskIO().execute { localDataSource.insertFavorite(favorite) }
-//
-//    override fun deleteFavorite(favorite: favoriteMovieEntity) =
-//        appExecutors.diskIO().execute { localDataSource.deleteFavorite(favorite) }
 
 }
