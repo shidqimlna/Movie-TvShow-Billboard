@@ -1,6 +1,5 @@
 package com.example.jetpackprosubmission.ui.movie
 
-//import com.example.jetpackprosubmission.utils.DataDummy
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -24,10 +23,11 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class MovieViewModelTest {
     private lateinit var viewModel: MovieViewModel
-    private val dummyMovie = DataDummy.generateDummyMovies()[0]
+    private val dummyMovie = DataDummy.generateDummyMovieDetail()
     private val movieId = dummyMovie.id
 
-    @get:Rule
+    @Rule
+    @JvmField
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
@@ -75,18 +75,9 @@ class MovieViewModelTest {
         movie.value = dummyMovie
 
         `when`(mainRepository.getMovieDetail(movieId)).thenReturn(movie)
-        val movieEntity = viewModel.getMovieDetail().value
-        verify(mainRepository).getMovieDetail(movieId)
-        Assert.assertNotNull(movieEntity)
-        assertEquals(dummyMovie.data?.id, movieEntity?.data?.id)
-        assertEquals(dummyMovie.data?.posterPath, movieEntity?.data?.posterPath)
-        assertEquals(dummyMovie.data?.title, movieEntity?.data?.title)
-        assertEquals(dummyMovie.data?.overview, movieEntity?.data?.overview)
-        assertEquals(dummyMovie.data?.runtime, movieEntity?.data?.runtime)
-        assertEquals(dummyMovie.data?.releaseDate, movieEntity?.data?.releaseDate)
-        assertEquals(dummyMovie.data?.voteAverage, movieEntity?.data?.voteAverage)
 
         viewModel.getMovieDetail().observeForever(movieDetailObserver)
+
         verify(movieDetailObserver).onChanged(dummyMovie)
     }
 }

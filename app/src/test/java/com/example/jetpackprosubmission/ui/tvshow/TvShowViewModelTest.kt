@@ -23,7 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class TvShowViewModelTest {
     private lateinit var viewModel: TvShowViewModel
-    private val dummyTvShow = DataDummy.generateDummyTvShows()[0]
+    private val dummyTvShow = DataDummy.generateDummyTvShowDetail()
     private val tvShowId = dummyTvShow.id
 
     @Rule
@@ -75,20 +75,9 @@ class TvShowViewModelTest {
         tvShow.value = dummyTvShow
 
         `when`(mainRepository.getTvShowDetail(tvShowId)).thenReturn(tvShow)
-        val tvShowEntity = viewModel.getTvShowDetail().value?.data
-        verify(mainRepository).getTvShowDetail(tvShowId)
-        Assert.assertNotNull(tvShowEntity)
-        assertEquals(dummyTvShow.data?.id, tvShowEntity?.id)
-        assertEquals(dummyTvShow.data?.posterPath, tvShowEntity?.posterPath)
-        assertEquals(dummyTvShow.data?.name, tvShowEntity?.name)
-        assertEquals(dummyTvShow.data?.overview, tvShowEntity?.overview)
-        assertEquals(dummyTvShow.data?.firstAirDate, tvShowEntity?.firstAirDate)
-        assertEquals(dummyTvShow.data?.lastAirDate, tvShowEntity?.lastAirDate)
-        assertEquals(dummyTvShow.data?.voteAverage, tvShowEntity?.voteAverage)
-        assertEquals(dummyTvShow.data?.numberOfEpisodes, tvShowEntity?.numberOfEpisodes)
-        assertEquals(dummyTvShow.data?.numberOfSeasons, tvShowEntity?.numberOfSeasons)
 
         viewModel.getTvShowDetail().observeForever(tvShowDetailObserver)
+
         verify(tvShowDetailObserver).onChanged(dummyTvShow)
     }
 }
